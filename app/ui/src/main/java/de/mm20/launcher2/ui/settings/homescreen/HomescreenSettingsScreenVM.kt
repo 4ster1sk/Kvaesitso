@@ -33,7 +33,6 @@ class HomescreenSettingsScreenVM(
 
     var showClockWidgetSheet by mutableStateOf(false)
 
-
     val dimWallpaper = uiSettings.dimWallpaper
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
@@ -111,6 +110,14 @@ class HomescreenSettingsScreenVM(
 
     fun setFixedSearchBar(fixedSearchBar: Boolean) {
         uiSettings.setFixedSearchBar(fixedSearchBar)
+    }
+
+    val searchBarPlaceholder = uiSettings.searchBarPlaceholder
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+
+
+    fun setSearchBarPlaceholder(searchBarPlaceholder: String) {
+        uiSettings.setSearchBarPlaceholder(searchBarPlaceholder)
     }
 
     val bottomSearchBar = uiSettings.bottomSearchBar

@@ -87,6 +87,7 @@ data class LauncherSettingsData internal constructor(
     val searchLaunchOnEnter: Boolean = true,
     val searchBarBottom: Boolean = false,
     val searchBarFixed: Boolean = false,
+    val searchBarPlaceholder: String? = null,
 
     val searchResultsReversed: Boolean = false,
     val searchResultOrder: SearchResultOrder = SearchResultOrder.Weighted,

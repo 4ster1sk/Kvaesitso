@@ -88,6 +88,8 @@ class LauncherScaffoldVM : ViewModel(), KoinComponent {
 
     val autoFocusSearch = uiSettings.openKeyboardOnSearch
 
+    val searchBarPlaceholder = uiSettings.searchBarPlaceholder
+
     fun setSearchbarFocus(focused: Boolean) {
         if (searchBarFocused.value != focused) searchBarFocused.value = focused
     }

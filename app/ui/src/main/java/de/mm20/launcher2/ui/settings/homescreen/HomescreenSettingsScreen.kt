@@ -38,6 +38,7 @@ import de.mm20.launcher2.ui.component.preferences.PreferenceCategory
 import de.mm20.launcher2.ui.component.preferences.PreferenceScreen
 import de.mm20.launcher2.ui.component.preferences.SliderPreference
 import de.mm20.launcher2.ui.component.preferences.SwitchPreference
+import de.mm20.launcher2.ui.component.preferences.TextPreference
 import de.mm20.launcher2.ui.launcher.widgets.clock.ConfigureClockWidgetSheet
 import de.mm20.launcher2.ui.locals.LocalNavController
 import kotlinx.coroutines.delay
@@ -59,6 +60,7 @@ fun HomescreenSettingsScreen() {
     val searchBarColor by viewModel.searchBarColor.collectAsStateWithLifecycle(null)
     val bottomSearchBar by viewModel.bottomSearchBar.collectAsStateWithLifecycle(null)
     val fixedSearchBar by viewModel.fixedSearchBar.collectAsStateWithLifecycle(null)
+    val searchBarPlaceholder by viewModel.searchBarPlaceholder.collectAsStateWithLifecycle(null)
     val lightStatusBar by viewModel.statusBarIcons.collectAsStateWithLifecycle(null)
     val dimWallpaper by viewModel.dimWallpaper.collectAsStateWithLifecycle()
     val blurWallpaper by viewModel.blurWallpaper.collectAsStateWithLifecycle()
@@ -156,6 +158,14 @@ fun HomescreenSettingsScreen() {
                     value = fixedSearchBar == true,
                     onValueChanged = {
                         viewModel.setFixedSearchBar(it)
+                    },
+                )
+                TextPreference(
+                    title = stringResource(R.string.preference_layout_earch_bar_placeholder),
+                    summary = searchBarPlaceholder ?: stringResource(R.string.search_bar_placeholder),
+                    value =  searchBarPlaceholder ?: stringResource(R.string.search_bar_placeholder),
+                    onValueChanged = {
+                        viewModel.setSearchBarPlaceholder(it)
                     },
                 )
             }
@@ -337,6 +347,7 @@ fun SearchBarStylePreference(
                             level = level,
                             style = styles[it],
                             value = previewSearchValue,
+                            placeholder = stringResource(R.string.search_bar_placeholder),
                             onValueChange = {}
                         )
                     }

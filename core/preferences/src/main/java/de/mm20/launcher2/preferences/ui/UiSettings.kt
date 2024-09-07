@@ -281,6 +281,17 @@ class UiSettings internal constructor(
         }
     }
 
+    val searchBarPlaceholder
+        get() = launcherDataStore.data.map {
+            it.searchBarPlaceholder
+        }.distinctUntilChanged()
+
+    fun setSearchBarPlaceholder(searchBarPlaceholder: String) {
+        launcherDataStore.update {
+            it.copy(searchBarPlaceholder = searchBarPlaceholder)
+        }
+    }
+
     val openKeyboardOnSearch
         get() = launcherDataStore.data.map {
             it.searchBarKeyboard

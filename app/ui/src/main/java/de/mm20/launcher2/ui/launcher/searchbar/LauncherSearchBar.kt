@@ -59,7 +59,8 @@ fun LauncherSearchBar(
     darkColors: Boolean = false,
     bottomSearchBar: Boolean = false,
     searchBarOffset: () -> Int = { 0 },
-    onKeyboardActionGo: (KeyboardActionScope.() -> Unit)? = null
+    onKeyboardActionGo: (KeyboardActionScope.() -> Unit)? = null,
+    placeholder: String
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -91,6 +92,7 @@ fun LauncherSearchBar(
             },
             reverse = bottomSearchBar,
             darkColors = darkColors,
+            placeholder = placeholder,
             menu = {
                 AnimatedVisibility(
                     hiddenItemsButtonEnabled && isSearchOpen && hiddenItems.isNotEmpty(),

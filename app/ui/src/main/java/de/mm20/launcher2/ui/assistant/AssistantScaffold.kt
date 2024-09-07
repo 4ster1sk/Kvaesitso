@@ -14,6 +14,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
@@ -21,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import de.mm20.launcher2.preferences.SearchBarColors
 import de.mm20.launcher2.searchactions.actions.SearchAction
+import de.mm20.launcher2.ui.R
 import de.mm20.launcher2.ui.component.SearchBarLevel
 import de.mm20.launcher2.ui.launcher.LauncherScaffoldVM
 import de.mm20.launcher2.ui.launcher.gestures.LauncherGestureHandler
@@ -187,6 +189,7 @@ fun AssistantScaffold(
 
         val searchBarColor by viewModel.searchBarColor.collectAsState()
         val searchBarStyle by viewModel.searchBarStyle.collectAsState()
+        val searchBarPlaceholder by viewModel.searchBarPlaceholder.collectAsState(null)
 
         val launchOnEnter by searchVM.launchOnEnter.collectAsState(false)
 
@@ -196,6 +199,7 @@ fun AssistantScaffold(
             style = searchBarStyle,
             level = { searchBarLevel },
             value = { value },
+            placeholder = searchBarPlaceholder ?: stringResource(R.string.search_bar_placeholder),
             focused = searchBarFocused,
             onFocusChange = {
                 if (it) viewModel.openSearch()

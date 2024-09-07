@@ -619,6 +619,7 @@ fun PagerScaffold(
 
         val searchBarColor by viewModel.searchBarColor.collectAsState()
         val searchBarStyle by viewModel.searchBarStyle.collectAsState()
+        val searchBarPlaceholder by viewModel.searchBarPlaceholder.collectAsState(null)
 
         val launchOnEnter by searchVM.launchOnEnter.collectAsState(false)
 
@@ -628,6 +629,7 @@ fun PagerScaffold(
             style = searchBarStyle,
             level = { searchBarLevel },
             value = { value },
+            placeholder = searchBarPlaceholder ?: stringResource(R.string.search_bar_placeholder),
             focused = focusSearchBar,
             onFocusChange = {
                 if (it) viewModel.openSearch()
