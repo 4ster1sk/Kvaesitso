@@ -45,6 +45,8 @@ dependencies {
 
     implementation(libs.commons.text)
 
+    implementation(libs.wanakana.core)
+
     implementation(project(":core:base"))
     implementation(project(":core:ktx"))
     implementation(project(":core:compat"))

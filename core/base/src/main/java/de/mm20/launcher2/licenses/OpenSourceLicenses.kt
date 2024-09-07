@@ -220,4 +220,11 @@ val OpenSourceLicenses = arrayOf(
         url = "https://github.com/woheller69/AndroidAddressFormatter",
         copyrightNote = "Copyright (c) 2022 woheller69",
     ),
+    OpenSourceLibrary(
+        name = "wanakana-kt",
+        description = "Kotlin utility library for detecting and transliterating Hiragana, Katakana, and Romaji",
+        licenseName = R.string.mit_license_name,
+        licenseText = R.raw.license_mit,
+        url = "https://github.com/esnaultdev/wanakana-kt"
+    ),
 )

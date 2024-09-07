@@ -31,6 +31,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.apache.commons.text.similarity.FuzzyScore
 import java.util.Locale
+import dev.esnault.wanakana.core.Wanakana
 
 interface AppRepository : SearchableRepository<Application> {
     fun findOne(
@@ -238,6 +239,7 @@ internal class AppRepositoryImpl(
     }
 
     override fun search(query: String, allowNetwork: Boolean): Flow<ImmutableList<LauncherApp>> {
+        val queryRomaji = toRomaji(query);
         return installedApps.map { apps ->
             withContext(Dispatchers.Default) {
                 val appResults = mutableListOf<LauncherApp>()
@@ -245,7 +247,7 @@ internal class AppRepositoryImpl(
                     appResults.addAll(apps)
                 } else {
                     appResults.addAll(apps.filter {
-                        matches(it.label, query)
+                        matches(it.label, query) || matches(toRomaji(it.label), queryRomaji)
                     })
 
                     val componentName = ComponentName.unflattenFromString(query)
@@ -255,6 +257,31 @@ internal class AppRepositoryImpl(
                 appResults.toImmutableList()
             }
         }
+    }
+
+    private fun toRomaji(label: String): String {
+        val halfWidthToFullWidthMap = mapOf(
+            'ｱ' to 'ア', 'ｲ' to 'イ', 'ｳ' to 'ウ', 'ｴ' to 'エ', 'ｵ' to 'オ',
+            'ｶ' to 'カ', 'ｷ' to 'キ', 'ｸ' to 'ク', 'ｹ' to 'ケ', 'ｺ' to 'コ',
+            'ｻ' to 'サ', 'ｼ' to 'シ', 'ｽ' to 'ス', 'ｾ' to 'セ', 'ｿ' to 'ソ',
+            'ﾀ' to 'タ', 'ﾁ' to 'チ', 'ﾂ' to 'ツ', 'ﾃ' to 'テ', 'ﾄ' to 'ト',
+            'ﾅ' to 'ナ', 'ﾆ' to 'ニ', 'ﾇ' to 'ヌ', 'ﾈ' to 'ネ', 'ﾉ' to 'ノ',
+            'ﾊ' to 'ハ', 'ﾋ' to 'ヒ', 'ﾌ' to 'フ', 'ﾍ' to 'ヘ', 'ﾎ' to 'ホ',
+            'ﾏ' to 'マ', 'ﾐ' to 'ミ', 'ﾑ' to 'ム', 'ﾒ' to 'メ', 'ﾓ' to 'モ',
+            'ﾔ' to 'ヤ', 'ﾕ' to 'ユ', 'ﾖ' to 'ヨ',
+            'ﾗ' to 'ラ', 'ﾘ' to 'リ', 'ﾙ' to 'ル', 'ﾚ' to 'レ', 'ﾛ' to 'ロ',
+            'ﾜ' to 'ワ', 'ｦ' to 'ヲ', 'ﾝ' to 'ン',
+            'ｧ' to 'ァ', 'ｨ' to 'ィ', 'ｩ' to 'ゥ', 'ｪ' to 'ェ', 'ｫ' to 'ォ',
+            'ｬ' to 'ャ', 'ｭ' to 'ュ', 'ｮ' to 'ョ', 'ｯ' to 'ッ',
+            'ﾞ' to '゛', 'ﾟ' to '゜'
+        )
+
+        val builder = StringBuilder()
+        for (char in label) {
+            builder.append(halfWidthToFullWidthMap[char] ?: char)
+        }
+
+        return Wanakana.toRomaji(builder.toString())
     }
 
     private fun matches(label: String, query: String): Boolean {
