@@ -25,6 +25,7 @@ import androidx.compose.material.icons.rounded.AlignVerticalTop
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.BatteryFull
 import androidx.compose.material.icons.rounded.ColorLens
+import androidx.compose.material.icons.rounded.CropFree
 import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.Height
 import androidx.compose.material.icons.rounded.HorizontalSplit
@@ -93,6 +94,7 @@ fun ClockWidget(
     val viewModel: ClockWidgetVM = viewModel()
     val context = LocalContext.current
     val compact by viewModel.compactLayout.collectAsState()
+    val borderless by viewModel.borderless.collectAsState()
     val clockStyle by viewModel.clockStyle.collectAsState()
     val color by viewModel.color.collectAsState()
     val alignment by viewModel.alignment.collectAsState()
@@ -163,7 +165,7 @@ fun ClockWidget(
                 Box(
                     modifier = Modifier
                         .then(if (fillScreenHeight) Modifier.weight(1f) else Modifier)
-                        .fillMaxWidth().padding(horizontal = if (compact == true) 0.dp else 24.dp),
+                        .fillMaxWidth().padding(horizontal = if (compact == true || borderless) 0.dp else 24.dp),
                     contentAlignment = when (alignment) {
                         ClockWidgetAlignment.Center -> Alignment.Center
                         ClockWidgetAlignment.Top -> Alignment.TopCenter
@@ -186,7 +188,7 @@ fun ClockWidget(
                                         viewModel.launchClockApp(context)
                                     }
                                 ) {
-                                    Clock(clockStyle, false, darkColors)
+                                    Clock(clockStyle, false, borderless, darkColors)
                                 }
 
                                 if (partProvider != null) {
@@ -231,7 +233,7 @@ fun ClockWidget(
                                         viewModel.launchClockApp(context)
                                     }
                                 ) {
-                                    Clock(clockStyle, true, darkColors)
+                                    Clock(clockStyle, true, borderless, darkColors)
                                 }
                             }
                         }
@@ -259,6 +261,7 @@ fun ClockWidget(
 fun Clock(
     style: ClockWidgetStyle?,
     compact: Boolean,
+    borderless: Boolean,
     darkColors: Boolean = false
 ) {
     val time = LocalTime.current
@@ -316,7 +319,7 @@ fun Clock(
             darkColors
         )
 
-        is ClockWidgetStyle.Custom -> CustomClock(style, compact, useThemeColor, darkColors)
+        is ClockWidgetStyle.Custom -> CustomClock(style, compact, borderless, useThemeColor, darkColors)
         is ClockWidgetStyle.Empty -> {}
         else -> {}
     }
@@ -341,6 +344,7 @@ fun ConfigureClockWidgetSheet(
 ) {
     val viewModel: ClockWidgetSettingsScreenVM = viewModel()
     val compact by viewModel.compact.collectAsState()
+    val borderless by viewModel.borderless.collectAsState()
     val color by viewModel.color.collectAsState()
     val style by viewModel.clockStyle.collectAsState()
     val fillHeight by viewModel.fillHeight.collectAsState()
@@ -497,6 +501,15 @@ fun ConfigureClockWidgetSheet(
                         onValueChanged = {
                             viewModel.setFillHeight(it)
                         }
+                    )
+                    SwitchPreference(
+                        title = stringResource(R.string.widget_config_appwidget_borderless),
+                        icon = Icons.Rounded.CropFree,
+                        value = borderless == true,
+                        onValueChanged = {
+                            viewModel.setBorderless(it)
+                        },
+                        enabled = compact == false
                     )
                     AnimatedVisibility(fillHeight == true) {
                         var showDropdown by remember { mutableStateOf(false) }
