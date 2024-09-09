@@ -199,13 +199,20 @@ internal class ContactRepository(
         val results = withContext(Dispatchers.IO) {
             val proj = arrayOf(
                 ContactsContract.RawContacts.CONTACT_ID,
-                ContactsContract.RawContacts._ID
+                ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
             )
-            val sel =
-                "${ContactsContract.RawContacts.DISPLAY_NAME_PRIMARY} LIKE ? OR ${ContactsContract.RawContacts.DISPLAY_NAME_ALTERNATIVE} LIKE ? OR ${ContactsContract.RawContacts.PHONETIC_NAME} LIKE ? OR ${ContactsContract.RawContacts.SORT_KEY_PRIMARY} LIKE ?"
-            val selArgs = arrayOf("%$query%", "%$query%", "%$query%", "%$query%")
+
+            val sel = """
+                ${ContactsContract.Contacts.DISPLAY_NAME_PRIMARY} LIKE ? 
+                OR ${ContactsContract.Contacts.DISPLAY_NAME_ALTERNATIVE} LIKE ? 
+                OR ${ContactsContract.Contacts.PHONETIC_NAME} LIKE ? 
+                OR ${ContactsContract.Contacts.SORT_KEY_PRIMARY} LIKE ? 
+                OR ${ContactsContract.CommonDataKinds.Phone.NUMBER} LIKE ?
+                """.trimIndent()
+
+            val selArgs = arrayOf("%$query%", "%$query%", "%$query%", "%$query%", "%$query%")
             val cursor = context.contentResolver.query(
-                ContactsContract.RawContacts.CONTENT_URI, proj, sel, selArgs, null
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI, proj, sel, selArgs, null
             ) ?: return@withContext mutableListOf()
             //Maps raw contact ids to contact ids
             val contactMap = mutableMapOf<Long, MutableSet<Long>>()
