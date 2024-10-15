@@ -91,7 +91,6 @@ data class LauncherSettingsData internal constructor(
     val searchBarPlaceholder: String? = null,
 
     val searchResultsReversed: Boolean = false,
-    val searchResultOrder: SearchResultOrder = SearchResultOrder.Weighted,
     val separateWorkProfile: Boolean = true,
 
     val rankingWeightFactor: WeightFactor = WeightFactor.Default,
@@ -376,12 +375,6 @@ sealed interface GestureAction {
     data class Launch(val key: String?) : GestureAction
 }
 
-@Serializable
-enum class SearchResultOrder {
-    Weighted,
-    Alphabetical,
-    LaunchCount,
-}
 
 @Serializable
 enum class WeightFactor {
