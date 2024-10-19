@@ -257,13 +257,12 @@ internal class AppRepositoryImpl(
                         ).takeIf { it.score.score >= 0.8f }
                     } )
                     appResults.addAll(apps.filter { matches(toRomaji(it.label), queryRomaji) })
-                    appResults = appResults.distinctBy { it.label }
 
                     val componentName = ComponentName.unflattenFromString(query)
                     getActivityByComponentName(componentName)?.let { appResults.add(it) }
                 }
                 appResults.sort()
-                appResults.toImmutableList()
+                appResults.distinctBy { it.label }.toImmutableList()
             }
         }
     }
