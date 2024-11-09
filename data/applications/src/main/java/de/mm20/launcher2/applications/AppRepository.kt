@@ -249,13 +249,15 @@ internal class AppRepositoryImpl(
                     appResults.addAll(apps)
                 } else {
                     appResults.addAll(apps.mapNotNull {
+                        val score = ResultScore(
+                            query = query,
+                            primaryFields = listOf(it.label),
+                        )
+                        if (score.score < 0.8f) return@mapNotNull null
                         it.copy(
-                            score = ResultScore(
-                                query = query,
-                                primaryFields = listOf(it.label),
-                            )
-                        ).takeIf { it.score.score >= 0.8f }
-                    } )
+                            score = score
+                        )
+                    })
                     appResults.addAll(apps.filter { matches(toRomaji(it.label), queryRomaji) })
 
                     val componentName = ComponentName.unflattenFromString(query)
