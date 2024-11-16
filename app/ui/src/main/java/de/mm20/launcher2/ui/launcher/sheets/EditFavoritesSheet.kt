@@ -77,7 +77,7 @@ import coil.compose.AsyncImage
 import de.mm20.launcher2.badges.Badge
 import de.mm20.launcher2.icons.LauncherIcon
 import de.mm20.launcher2.search.SavableSearchable
-import de.mm20.launcher2.search.data.Tag
+import de.mm20.launcher2.search.Tag
 import de.mm20.launcher2.ui.R
 import de.mm20.launcher2.ui.common.TagChip
 import de.mm20.launcher2.ui.component.BottomSheetDialog
@@ -565,11 +565,7 @@ fun ReorderFavoritesGrid(viewModel: EditFavoritesSheetVM, paddingValues: Padding
                                                 },
                                             tag = tag,
                                             selected = tag.tag == hoveredTag,
-                                            elevation = if (dragged) FilterChipDefaults.elevatedFilterChipElevation() else FilterChipDefaults.filterChipElevation(),
-                                            colors = if (dragged) FilterChipDefaults.elevatedFilterChipColors()
-                                            else FilterChipDefaults.filterChipColors(
-                                                containerColor = MaterialTheme.colorScheme.surface
-                                            ),
+                                            dragged = dragged,
                                             clearable = true,
                                             onClear = {
                                                 viewModel.unpinTag(tag)
