@@ -2,6 +2,7 @@ package de.mm20.launcher2.ui.common
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.horizontalScroll
@@ -48,6 +49,7 @@ fun FavoritesTagSelector(
     reverse: Boolean,
     onSelectTag: (String?) -> Unit,
     scrollState: ScrollState,
+    compact: Boolean,
     expanded: Boolean,
     onExpand: (Boolean) -> Unit,
 ) {
@@ -80,14 +82,26 @@ fun FavoritesTagSelector(
                             .padding(start = 16.dp),
                         selected = selectedTag == null,
                         onClick = { onSelectTag(null) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Rounded.Star,
-                                contentDescription = null,
-                                modifier = Modifier.size(FilterChipDefaults.IconSize),
-                            )
+                        leadingIcon = if (compact) null else {
+                            {
+                                Icon(
+                                    imageVector = Icons.Rounded.Star,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
+                                )
+                            }
                         },
-                        label = { Text(stringResource(R.string.favorites)) }
+                        label = {
+                            if (compact) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Star,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
+                                )
+                            } else {
+                                Text(stringResource(R.string.favorites))
+                            }
+                        }
                     )
                     for (tag in tags) {
                         TagChip(
@@ -102,6 +116,7 @@ fun FavoritesTagSelector(
                                     onSelectTag(tag.tag)
                                 }
                             },
+                            compact = compact,
                             onLongClick = {
                                 sheetManager.showEditTagSheet(tag.tag)
                             }
@@ -119,7 +134,7 @@ fun FavoritesTagSelector(
                         }
                     }
 
-                }
+                    }
 
                 if (editButton) {
                     SmallFloatingActionButton(
@@ -147,20 +162,33 @@ fun FavoritesTagSelector(
                             .padding(end = 8.dp),
                         selected = selectedTag == null,
                         onClick = { onSelectTag(null) },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Rounded.Star,
-                                contentDescription = null,
-                                modifier = Modifier.size(FilterChipDefaults.IconSize),
-                            )
+                        leadingIcon = if (compact) null else {
+                            {
+                                Icon(
+                                    imageVector = Icons.Rounded.Star,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
+                                )
+                            }
                         },
-                        label = { Text(stringResource(R.string.favorites)) }
+                        label = {
+                            if (compact) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Star,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
+                                )
+                            } else {
+                                Text(stringResource(R.string.favorites))
+                            }
+                        }
                     )
                     for (tag in tags) {
                         TagChip(
                             modifier = Modifier
                                 .padding(end = 8.dp),
                             tag = tag,
+                            compact = compact,
                             selected = selectedTag == tag.tag,
                             onClick = {
                                 if (selectedTag == tag.tag) {
