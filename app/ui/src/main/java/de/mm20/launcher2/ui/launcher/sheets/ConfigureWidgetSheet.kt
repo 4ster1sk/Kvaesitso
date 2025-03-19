@@ -106,17 +106,7 @@ fun ConfigureWidgetSheet(
     onWidgetUpdated: (Widget) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    BottomSheetDialog(onDismissRequest = onDismiss,
-        title = {
-            Box(
-                modifier = Modifier
-                    .width(32.dp)
-                    .height(4.dp)
-                    .clip(MaterialTheme.shapes.small)
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f))
-            )
-        }
-    ) {
+    BottomSheetDialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -205,6 +195,14 @@ fun ColumnScope.ConfigureFavoritesWidget(
                 value = widget.config.editButton,
                 onValueChanged = {
                     onWidgetUpdated(widget.copy(config = widget.config.copy(editButton = it)))
+                }
+            )
+            SwitchPreference(
+                title = stringResource(R.string.preference_compact_tags),
+                iconPadding = false,
+                value = widget.config.compactTags,
+                onValueChanged = {
+                    onWidgetUpdated(widget.copy(config = widget.config.copy(compactTags = it)))
                 }
             )
         }
@@ -478,9 +476,6 @@ fun ColumnScope.ConfigureAppWidget(
                         } else {
                             ActivityOptions.makeBasic()
                                 .setPendingIntentBackgroundActivityStartMode(
-                                    ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
-                                )
-                                .setPendingIntentCreatorBackgroundActivityStartMode(
                                     ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
                                 )
                                 .toBundle()

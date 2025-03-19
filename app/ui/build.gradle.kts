@@ -100,6 +100,7 @@ dependencies {
 
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.browser)
+    implementation(libs.androidx.emojipicker)
 
     implementation(libs.androidx.lifecycle.viewmodelcompose)
     implementation(libs.androidx.lifecycle.runtimecompose)
@@ -145,7 +146,6 @@ dependencies {
     implementation(project(":data:websites"))
     implementation(project(":data:unitconverter"))
     implementation(project(":libs:nextcloud"))
-    implementation(project(":libs:g-services"))
     implementation(project(":libs:owncloud"))
     implementation(project(":services:accounts"))
     implementation(project(":services:plugins"))

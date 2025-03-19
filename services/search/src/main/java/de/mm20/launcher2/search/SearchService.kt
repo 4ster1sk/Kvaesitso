@@ -30,6 +30,7 @@ interface SearchService {
     fun search(
         query: String,
         filters: SearchFilters,
+        initialResults: SearchResults? = null,
     ): Flow<SearchResults>
 
     fun getAllApps(): Flow<AllAppsResults>
@@ -54,9 +55,24 @@ internal class SearchServiceImpl(
     override fun search(
         query: String,
         filters: SearchFilters,
+        initialResults: SearchResults?,
     ): Flow<SearchResults> = flow {
         supervisorScope {
-            val results = MutableStateFlow(SearchResults())
+            val results = MutableStateFlow(
+                initialResults?.let {
+                    it.copy(
+                        apps = if (filters.apps) it.apps else null,
+                        shortcuts = if (filters.shortcuts) it.shortcuts else null,
+                        contacts = if (filters.contacts) it.contacts else null,
+                        calendars = if (filters.events) it.calendars else null,
+                        files = if (filters.files) it.files else null,
+                        calculators = if (filters.tools) it.calculators else null,
+                        unitConverters = if (filters.tools) it.unitConverters else null,
+                        websites = if (filters.websites) it.websites else null,
+                        wikipedia = if (filters.articles) it.wikipedia else null,
+                    )
+                }
+                    ?: SearchResults())
 
             val customAttrResults = customAttributesRepository.search(query)
                 .map { items ->
@@ -264,13 +280,25 @@ internal class SearchServiceImpl(
                     val standardProfileApps = mutableListOf<Application>()
                     val workProfileApps = mutableListOf<Application>()
                     val privateSpaceApps = mutableListOf<Application>()
-                    for (app in apps)  {
+                    for (app in apps) {
                         when {
-                            standardProfile != null && app.user == standardProfile.userHandle -> standardProfileApps.add(app)
-                            workProfile != null && app.user == workProfile.userHandle -> workProfileApps.add(app)
-                            privateSpace != null && app.user == privateSpace.userHandle -> privateSpaceApps.add(app)
+                            standardProfile != null && app.user == standardProfile.userHandle -> standardProfileApps.add(
+                                app
+                            )
+
+                            workProfile != null && app.user == workProfile.userHandle -> workProfileApps.add(
+                                app
+                            )
+
+                            privateSpace != null && app.user == privateSpace.userHandle -> privateSpaceApps.add(
+                                app
+                            )
+
                             else -> {
-                                Log.w("MM20", "App ${app.label} does not belong to any known profile. Ignoring.")
+                                Log.w(
+                                    "MM20",
+                                    "App ${app.label} does not belong to any known profile. Ignoring."
+                                )
                             }
                         }
                     }

@@ -39,7 +39,6 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -77,7 +76,7 @@ import coil.compose.AsyncImage
 import de.mm20.launcher2.badges.Badge
 import de.mm20.launcher2.icons.LauncherIcon
 import de.mm20.launcher2.search.SavableSearchable
-import de.mm20.launcher2.search.data.Tag
+import de.mm20.launcher2.search.Tag
 import de.mm20.launcher2.ui.R
 import de.mm20.launcher2.ui.common.TagChip
 import de.mm20.launcher2.ui.component.BottomSheetDialog
@@ -91,7 +90,6 @@ import de.mm20.launcher2.ui.component.dragndrop.rememberLazyDragAndDropListState
 import de.mm20.launcher2.ui.ktx.splitLeadingEmoji
 import de.mm20.launcher2.ui.ktx.toPixels
 import de.mm20.launcher2.ui.locals.LocalGridSettings
-import de.mm20.launcher2.ui.settings.tags.EditTagSheet
 import kotlin.math.roundToInt
 
 @Composable
@@ -107,28 +105,7 @@ fun EditFavoritesSheet(
     val loading by viewModel.loading
     val createShortcutTarget by viewModel.createShortcutTarget
 
-    BottomSheetDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(
-                if (createShortcutTarget == null) {
-                    stringResource(id = R.string.menu_item_edit_favs)
-                } else {
-                    stringResource(id = R.string.create_app_shortcut)
-                }
-            )
-        },
-        dismissible = {
-            createShortcutTarget == null
-        },
-        confirmButton = if (createShortcutTarget != null) {
-            {
-                OutlinedButton(onClick = { viewModel.cancelPickShortcut() }) {
-                    Text(stringResource(id = android.R.string.cancel))
-                }
-            }
-        } else null
-    ) {
+    BottomSheetDialog(onDismiss) {
         if (loading) {
             Box(
                 modifier = Modifier
@@ -565,11 +542,7 @@ fun ReorderFavoritesGrid(viewModel: EditFavoritesSheetVM, paddingValues: Padding
                                                 },
                                             tag = tag,
                                             selected = tag.tag == hoveredTag,
-                                            elevation = if (dragged) FilterChipDefaults.elevatedFilterChipElevation() else FilterChipDefaults.filterChipElevation(),
-                                            colors = if (dragged) FilterChipDefaults.elevatedFilterChipColors()
-                                            else FilterChipDefaults.filterChipColors(
-                                                containerColor = MaterialTheme.colorScheme.surface
-                                            ),
+                                            dragged = dragged,
                                             clearable = true,
                                             onClear = {
                                                 viewModel.unpinTag(tag)

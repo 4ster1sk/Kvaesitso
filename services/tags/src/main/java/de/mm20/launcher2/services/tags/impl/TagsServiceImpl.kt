@@ -3,7 +3,7 @@ package de.mm20.launcher2.services.tags.impl
 import de.mm20.launcher2.data.customattrs.CustomAttributesRepository
 import de.mm20.launcher2.searchable.SavableSearchableRepository
 import de.mm20.launcher2.search.SavableSearchable
-import de.mm20.launcher2.search.data.Tag
+import de.mm20.launcher2.search.Tag
 import de.mm20.launcher2.searchable.PinnedLevel
 import de.mm20.launcher2.services.tags.TagsService
 import kotlinx.coroutines.CoroutineScope
@@ -45,14 +45,7 @@ internal class TagsServiceImpl(
             }
             if (newName != null && newName != tag) {
                 customAttributesRepository.renameTag(tag, newName).join()
-                val pinnedTags = searchableRepository.get(
-                    includeTypes = listOf(Tag.Domain),
-                    minPinnedLevel = PinnedLevel.AutomaticallySorted,
-                ).first()
-                val oldTag = Tag(tag)
-                if (pinnedTags.any { it.key == oldTag.key }) {
-                    searchableRepository.replace(oldTag.key, Tag(newName))
-                }
+                searchableRepository.replace(Tag(tag).key, Tag(newName))
             }
 
         }

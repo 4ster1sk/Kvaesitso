@@ -35,6 +35,7 @@ data class LauncherSettingsData internal constructor(
     val clockWidgetCustom: ClockWidgetStyle.Custom = ClockWidgetStyle.Custom(),
     val clockWidgetColors: ClockWidgetColors = ClockWidgetColors.Auto,
     val clockWidgetShowSeconds: Boolean = false,
+    val clockWidgetTimeFormat: TimeFormat = TimeFormat.System,
     val clockWidgetUseThemeColor: Boolean = false,
     val clockWidgetAlarmPart: Boolean = true,
     val clockWidgetBatteryPart: Boolean = true,
@@ -49,6 +50,7 @@ data class LauncherSettingsData internal constructor(
     val favoritesFrequentlyUsed: Boolean = true,
     val favoritesFrequentlyUsedRows: Int = 1,
     val favoritesEditButton: Boolean = true,
+    val favoritesCompactTags: Boolean = false,
 
     val fileSearchProviders: Set<String> = setOf("local"),
 
@@ -409,4 +411,11 @@ enum class KeyboardFilterBarItem {
     @SerialName("events") Events,
     @SerialName("tools") Tools,
     @SerialName("hidden") HiddenResults,
+}
+
+@Serializable
+enum class TimeFormat {
+    @SerialName("system") System,
+    @SerialName("12h") TwelveHour,
+    @SerialName("24h") TwentyFourHour
 }

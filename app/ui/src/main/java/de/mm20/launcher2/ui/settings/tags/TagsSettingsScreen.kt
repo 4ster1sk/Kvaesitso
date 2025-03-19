@@ -5,7 +5,6 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Tag
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
@@ -19,12 +18,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import de.mm20.launcher2.ui.R
+import de.mm20.launcher2.ui.component.ShapedLauncherIcon
 import de.mm20.launcher2.ui.component.preferences.Preference
 import de.mm20.launcher2.ui.component.preferences.PreferenceCategory
 import de.mm20.launcher2.ui.component.preferences.PreferenceScreen
-import de.mm20.launcher2.ui.ktx.splitLeadingEmoji
+import de.mm20.launcher2.ui.launcher.sheets.EditTagSheet
 
 @Composable
 fun TagsSettingsScreen() {
@@ -46,19 +47,16 @@ fun TagsSettingsScreen() {
                 for (tag in tags) {
                     var showMenu by remember { mutableStateOf(false) }
 
-                    val (emoji, tagName) = remember(tag) {
-                        tag.splitLeadingEmoji()
-                    }
+                    val icon by remember(tag) { viewModel.getIcon(tag) }.collectAsState(null)
 
                     Preference(
                         icon = {
-                            if (emoji != null) {
-                                Text(emoji)
-                            } else {
-                                Icon(Icons.Rounded.Tag, null)
-                            }
+                            ShapedLauncherIcon(
+                                size = 36.dp,
+                                icon = { icon },
+                            )
                         },
-                        title = { Text(tagName ?: "") },
+                        title = { Text(tag) },
                         onClick = {
                             viewModel.editTag.value = tag
                         },
