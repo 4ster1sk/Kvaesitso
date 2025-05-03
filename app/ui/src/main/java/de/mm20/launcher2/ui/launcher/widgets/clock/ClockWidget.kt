@@ -290,6 +290,7 @@ fun Clock(
             twentyFourHours = isTwentyFourHours,
             useThemeColor = useThemeColor,
             darkColors = darkColors,
+            style = style,
         )
 
         is ClockWidgetStyle.Digital2 -> DigitalClock2(
