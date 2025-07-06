@@ -9,6 +9,8 @@ import de.mm20.launcher2.search.CalendarEvent
 import de.mm20.launcher2.search.calendar.CalendarListType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.Instant
+import java.time.ZoneId
 
 internal class TasksCalendarProvider(
     private val context: Context,
@@ -22,10 +24,17 @@ internal class TasksCalendarProvider(
         allowNetwork: Boolean
     ): List<CalendarEvent> {
         return withContext(Dispatchers.IO) {
+            val startOfDay = Instant.ofEpochMilli(from)
+                .atZone(ZoneId.systemDefault())
+                .withHour(0)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0)
+                .toInstant().toEpochMilli()
             queryTasks(
                 selection = buildList {
-                    add("dueDate >= $from")
-                    add("dueDate <= $to")
+                    add("($to >= hideUntil OR hideUntil IS NULL)")
+                    add("($from <= dueDate OR ($startOfDay <= dueDate AND dueDate % 60000 <= 0))")
                     if (excludedCalendars.isNotEmpty()) {
                         add("cdl_id NOT IN (${excludedCalendars.joinToString()})")
                     }
@@ -62,7 +71,8 @@ internal class TasksCalendarProvider(
                         color = cursor.getIntOrNull(colorIndex) ?: 0,
                         types = listOf(CalendarListType.Tasks),
                         providerId = "tasks.org",
-                        owner = cursor.getStringOrNull(accountIndex)?.substringAfter(":", "")?.takeIf { it.isNotBlank() },
+                        owner = cursor.getStringOrNull(accountIndex)?.substringAfter(":", "")
+                            ?.takeIf { it.isNotBlank() },
                     )
                 }
             }
@@ -82,6 +92,7 @@ internal class TasksCalendarProvider(
         cursor?.use {
             val idIndex = cursor.getColumnIndex("_id")
             val titleIndex = cursor.getColumnIndex("title")
+            val startIndex = cursor.getColumnIndex("hideUntil")
             val dueIndex = cursor.getColumnIndex("dueDate")
             val completedIndex = cursor.getColumnIndex("completed")
             val notesIndex = cursor.getColumnIndex("notes")
@@ -93,15 +104,31 @@ internal class TasksCalendarProvider(
                 val id = cursor.getLongOrNull(idIndex) ?: continue
                 val dueDate = cursor.getLongOrNull(dueIndex)?.takeIf { it > 0L } ?: continue
 
+                // https://github.com/tasks/tasks/blob/13d4c029e855fd32ec91e4d4ec5f740ec506136e/data/src/commonMain/kotlin/org/tasks/data/entity/Task.kt#L345
+                val isAllDay = dueDate % 60000 <= 0
+
+                val endTime = if (isAllDay) {
+                    Instant.ofEpochMilli(dueDate)
+                        .atZone(ZoneId.systemDefault())
+                        .withHour(23)
+                        .withMinute(59)
+                        .withSecond(59)
+                        .withNano(999_999_999)
+                        .toInstant()
+                        .toEpochMilli()
+                } else {
+                    dueDate
+                }
+
                 results += TasksCalendarEvent(
                     id = id,
                     label = cursor.getStringOrNull(titleIndex) ?: continue,
                     description = cursor.getStringOrNull(notesIndex),
                     color = cursor.getIntOrNull(colorIndex),
                     calendarName = cursor.getStringOrNull(calendarNameIndex),
-                    startTime = null,
-                    endTime = dueDate,
-                    allDay = dueDate % 60000 <= 0, // https://github.com/tasks/tasks/blob/13d4c029e855fd32ec91e4d4ec5f740ec506136e/data/src/commonMain/kotlin/org/tasks/data/entity/Task.kt#L345
+                    startTime = cursor.getLongOrNull(startIndex)?.takeIf { it > 0L },
+                    endTime = endTime,
+                    allDay = isAllDay,
                     isCompleted = (cursor.getLongOrNull(completedIndex) ?: 0L) != 0L,
                 )
             }
