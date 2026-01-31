@@ -19,7 +19,6 @@ import de.mm20.launcher2.ui.launcher.widgets.external.AppWidgetHost
 fun CustomClock(
     style: ClockWidgetStyle.Custom,
     compact: Boolean,
-    borderless: Boolean,
     useThemeColor: Boolean,
     darkColors: Boolean,
 ) {
@@ -39,7 +38,7 @@ fun CustomClock(
                 widgetId = widgetId,
                 useThemeColors = useThemeColor,
                 onLightBackground = darkColors,
-                borderless = compact || borderless,
+                borderless = compact,
                 modifier = Modifier
                     .then(
                         when {

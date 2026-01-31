@@ -312,9 +312,9 @@ fun WatchFaceSelector(
                                 ) {
 
                                     if (currentPageStyle.javaClass == selected?.javaClass) {
-                                        Clock(selected, compact, false, darkColors)
+                                        Clock(selected, compact, darkColors)
                                     } else {
-                                        Clock(currentPageStyle, compact, false, darkColors)
+                                        Clock(currentPageStyle, compact, darkColors)
                                     }
                                 }
                             }

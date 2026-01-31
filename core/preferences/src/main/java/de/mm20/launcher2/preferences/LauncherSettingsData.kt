@@ -24,7 +24,6 @@ data class LauncherSettingsData internal constructor(
     val mediaDenyList: Set<String> = emptySet(),
 
     val clockWidgetCompact: Boolean = false,
-    val clockWidgetBorderless: Boolean = false,
     @Deprecated("")
     @SerialName("clockWidgetStyle")
     val _clockWidgetStyle: ClockWidgetStyle = ClockWidgetStyle.Digital1(),
