@@ -1,6 +1,7 @@
 package de.mm20.launcher2.preferences
 
 import de.mm20.launcher2.backup.Backupable
+import de.mm20.launcher2.preferences.feed.FeedSettings
 import de.mm20.launcher2.preferences.search.ContactSearchSettings
 import de.mm20.launcher2.preferences.media.MediaSettings
 import de.mm20.launcher2.preferences.search.CalculatorSearchSettings
@@ -18,6 +19,7 @@ import de.mm20.launcher2.preferences.ui.BadgeSettings
 import de.mm20.launcher2.preferences.ui.ClockWidgetSettings
 import de.mm20.launcher2.preferences.ui.GestureSettings
 import de.mm20.launcher2.preferences.ui.IconSettings
+import de.mm20.launcher2.preferences.ui.LocaleSettings
 import de.mm20.launcher2.preferences.ui.SearchUiSettings
 import de.mm20.launcher2.preferences.ui.UiSettings
 import de.mm20.launcher2.preferences.ui.UiState
@@ -50,4 +52,6 @@ val preferencesModule = module {
     factory { ClockWidgetSettings(get()) }
     factory { LocationSearchSettings(get()) }
     factory { SearchFilterSettings(get()) }
+    factory { LocaleSettings(get()) }
+    factory { FeedSettings(get()) }
 }

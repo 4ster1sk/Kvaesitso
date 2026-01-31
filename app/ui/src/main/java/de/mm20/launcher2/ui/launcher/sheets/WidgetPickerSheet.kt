@@ -18,31 +18,25 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.ExpandMore
-import androidx.compose.material.icons.rounded.LightMode
-import androidx.compose.material.icons.rounded.MusicNote
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.StickyNote2
-import androidx.compose.material.icons.rounded.Today
-import androidx.compose.material.icons.rounded.Widgets
-import androidx.compose.material.icons.rounded.Work
+import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -57,6 +51,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
@@ -64,11 +59,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import de.mm20.launcher2.ui.R
-import de.mm20.launcher2.ui.component.BottomSheetDialog
+import de.mm20.launcher2.ui.component.DismissableBottomSheet
 import de.mm20.launcher2.widgets.AppWidget
 import de.mm20.launcher2.widgets.AppWidgetConfig
+import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.CalendarWidget
-import de.mm20.launcher2.widgets.FavoritesWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
 import de.mm20.launcher2.widgets.WeatherWidget
@@ -187,6 +182,7 @@ class BindAndConfigureAppWidgetActivity : Activity() {
                     cancel()
                 }
             }
+
             else -> {
                 Log.w("MM20", "Unknown request code $requestCode")
                 cancel()
@@ -196,7 +192,10 @@ class BindAndConfigureAppWidgetActivity : Activity() {
 
     private fun finishWithResult(widgetId: Int) {
         val data = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-        data.putExtra(ExtraAppWidgetProviderInfo, intent.getParcelableExtra<AppWidgetProviderInfo>(ExtraAppWidgetProviderInfo))
+        data.putExtra(
+            ExtraAppWidgetProviderInfo,
+            intent.getParcelableExtra<AppWidgetProviderInfo>(ExtraAppWidgetProviderInfo)
+        )
         setResult(RESULT_OK, data)
         appWidgetId = null
         finish()
@@ -240,7 +239,10 @@ private class BindAndConfigureAppWidgetContract(
                     ),
                 )
             } else {
-                Log.e("MM20", "Could not parse widget result: widgetId=$widgetId, widgetProviderInfo=$widgetProviderInfo")
+                Log.e(
+                    "MM20",
+                    "Could not parse widget result: widgetId=$widgetId, widgetProviderInfo=$widgetProviderInfo"
+                )
             }
         } else {
             Log.e("MM20", "Widget result was not OK")
@@ -252,41 +254,48 @@ private class BindAndConfigureAppWidgetContract(
 
 @Composable
 fun WidgetPickerSheet(
+    expanded: Boolean,
     includeBuiltinWidgets: Boolean = true,
     title: String = stringResource(R.string.widget_pick_widget),
     onWidgetSelected: (Widget) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val context = LocalContext.current
-    val density = LocalDensity.current
-    val viewModel: WidgetPickerSheetVM = viewModel(factory = WidgetPickerSheetVM.Factory)
 
-    val bindAppWidgetStarter =
-        rememberLauncherForActivityResult(BindAndConfigureAppWidgetContract(density)) {
-            if (it != null) {
-                onWidgetSelected(it)
-                onDismiss()
-            }
-        }
-
-
-    val appWidgetGroups by viewModel.appWidgetGroups.collectAsState(emptyList())
-    val expandAllGroups by viewModel.expandAllGroups.collectAsState(false)
-
-    val colorSurface = MaterialTheme.colorScheme.surfaceContainerLow
-
-    val query by viewModel.searchQuery.collectAsState("")
-
-    BottomSheetDialog(
+    DismissableBottomSheet(
+        expanded = expanded,
         onDismissRequest = onDismiss
     ) {
+        val context = LocalContext.current
+        val density = LocalDensity.current
+        val viewModel: WidgetPickerSheetVM = viewModel(factory = WidgetPickerSheetVM.Factory)
+
+        val bindAppWidgetStarter =
+            rememberLauncherForActivityResult(BindAndConfigureAppWidgetContract(density)) {
+                if (it != null) {
+                    onWidgetSelected(it)
+                    onDismiss()
+                }
+            }
+
+
+        val appWidgetGroups by viewModel.appWidgetGroups.collectAsState(emptyList())
+        val expandAllGroups by viewModel.expandAllGroups.collectAsState(false)
+
+        val colorSurface = MaterialTheme.colorScheme.surfaceContainerLow
+
+        val query by viewModel.searchQuery.collectAsState("")
+
         val builtIn by viewModel.builtInWidgets.collectAsState(emptyList())
         LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                start = 16.dp,
+                end = 16.dp,
+                bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 16.dp
+            ),
         ) {
             stickyHeader {
-                SearchBar(
+                DockedSearchBar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .drawBehind {
@@ -297,25 +306,35 @@ fun WidgetPickerSheet(
                                 )
                             )
                         }
-                        .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
-                    windowInsets = WindowInsets(0.dp),
-                    query = query,
-                    onQueryChange = { viewModel.search(it) },
-                    onSearch = {},
-                    active = false,
-                    onActiveChange = {},
-                    placeholder = {
-                        Text(stringResource(R.string.search_bar_placeholder))
-                    },
-                    leadingIcon = {
-                        Icon(Icons.Rounded.Search, null)
-                    },
-                    trailingIcon = {
-                        if (query.isNotEmpty()) {
-                            IconButton(onClick = { viewModel.search("") }) {
-                                Icon(Icons.Rounded.Clear, null)
-                            }
-                        }
+                        .padding(bottom = 16.dp),
+                    expanded = false,
+                    onExpandedChange = {},
+                    inputField = {
+                        SearchBarDefaults.InputField(
+                            leadingIcon = {
+                                Icon(
+                                    painterResource(R.drawable.search_24px),
+                                    contentDescription = null
+                                )
+                            },
+                            trailingIcon = {
+                                if (query.isNotEmpty()) {
+                                    IconButton(onClick = { viewModel.search("") }) {
+                                        Icon(painterResource(R.drawable.close_24px), null)
+                                    }
+                                }
+                            },
+                            onSearch = {},
+                            expanded = false,
+                            onExpandedChange = {},
+                            query = query,
+                            onQueryChange = {
+                                viewModel.search(it)
+                            },
+                            placeholder = {
+                                Text(stringResource(R.string.search_bar_placeholder))
+                            },
+                        )
                     }
                 ) {
                 }
@@ -325,14 +344,14 @@ fun WidgetPickerSheet(
                     OutlinedCard(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp),
+                            .padding(bottom = 16.dp),
                         onClick = {
                             val id = UUID.randomUUID()
                             val widget = when (it.type) {
                                 WeatherWidget.Type -> WeatherWidget(id)
                                 CalendarWidget.Type -> CalendarWidget(id)
                                 MusicWidget.Type -> MusicWidget(id)
-                                FavoritesWidget.Type -> FavoritesWidget(id)
+                                AppsWidget.Type -> AppsWidget(id)
                                 NotesWidget.Type -> NotesWidget(id)
                                 else -> return@OutlinedCard
                             }
@@ -344,14 +363,17 @@ fun WidgetPickerSheet(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                imageVector = when (it.type) {
-                                    WeatherWidget.Type -> Icons.Rounded.LightMode
-                                    CalendarWidget.Type -> Icons.Rounded.Today
-                                    MusicWidget.Type -> Icons.Rounded.MusicNote
-                                    FavoritesWidget.Type -> Icons.Rounded.Star
-                                    NotesWidget.Type -> Icons.Rounded.StickyNote2
-                                    else -> Icons.Rounded.Widgets
-                                },
+                                painter =
+                                    painterResource(
+                                        when (it.type) {
+                                            WeatherWidget.Type -> R.drawable.light_mode_24px
+                                            CalendarWidget.Type -> R.drawable.today_24px
+                                            MusicWidget.Type -> R.drawable.music_note_24px
+                                            AppsWidget.Type -> R.drawable.apps_24px
+                                            NotesWidget.Type -> R.drawable.sticky_note_2_24px
+                                            else -> R.drawable.widgets_24px
+                                        }
+                                    ),
                                 contentDescription = null,
                                 modifier = Modifier.padding(end = 16.dp)
                             )
@@ -380,7 +402,7 @@ fun WidgetPickerSheet(
                     )
                     Row(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp, vertical = 4.dp)
+                            .padding(vertical = 4.dp)
                             .clip(MaterialTheme.shapes.small)
                             .background(background)
                             .clickable(enabled = !expandAllGroups) {
@@ -402,7 +424,7 @@ fun WidgetPickerSheet(
                         if (!expandAllGroups) {
                             Icon(
                                 modifier = Modifier.rotate(rotate),
-                                imageVector = Icons.Rounded.ExpandMore,
+                                painter = painterResource(R.drawable.keyboard_arrow_down_24px),
                                 contentDescription = null
                             )
                         }
@@ -416,7 +438,7 @@ fun WidgetPickerSheet(
                         OutlinedCard(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 4.dp)
+                                .padding(vertical = 4.dp)
                                 .animateItem(),
                             onClick = {
                                 bindAppWidgetStarter.launch(it)
@@ -465,7 +487,7 @@ fun WidgetPickerSheet(
                                                 .clip(CircleShape)
                                                 .background(MaterialTheme.colorScheme.tertiaryContainer)
                                                 .padding(4.dp),
-                                            imageVector = Icons.Rounded.Work,
+                                            painter = painterResource(R.drawable.enterprise_24px),
                                             contentDescription = null,
                                             tint = MaterialTheme.colorScheme.onTertiaryContainer
                                         )

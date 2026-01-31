@@ -1,25 +1,22 @@
 package de.mm20.launcher2.ui.theme
 
-import android.content.Context
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.coerceAtMost
-import androidx.compose.ui.unit.dp
-import de.mm20.launcher2.preferences.Font
-import de.mm20.launcher2.preferences.SurfaceShape
+import androidx.compose.material3.MaterialExpressiveTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import de.mm20.launcher2.preferences.ui.UiSettings
 import de.mm20.launcher2.themes.ThemeRepository
 import de.mm20.launcher2.ui.locals.LocalDarkTheme
-import de.mm20.launcher2.ui.theme.colorscheme.*
-import de.mm20.launcher2.ui.theme.typography.DefaultTypography
-import de.mm20.launcher2.ui.theme.typography.getDeviceDefaultTypography
+import de.mm20.launcher2.ui.theme.colorscheme.darkColorSchemeOf
+import de.mm20.launcher2.ui.theme.colorscheme.lightColorSchemeOf
+import de.mm20.launcher2.ui.theme.shapes.shapesOf
+import de.mm20.launcher2.ui.theme.transparency.LocalTransparencyScheme
+import de.mm20.launcher2.ui.theme.transparency.transparencySchemeOf
+import de.mm20.launcher2.ui.theme.typography.typographyOf
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import org.koin.compose.koinInject
 import de.mm20.launcher2.preferences.ColorScheme as ColorSchemePref
 
@@ -28,16 +25,32 @@ import de.mm20.launcher2.preferences.ColorScheme as ColorSchemePref
 fun LauncherTheme(
     content: @Composable () -> Unit
 ) {
-
-    val context = LocalContext.current
     val uiSettings: UiSettings = koinInject()
     val themeRepository: ThemeRepository = koinInject()
 
-    val theme by remember {
-        uiSettings.theme.flatMapLatest {
-            themeRepository.getThemeOrDefault(it)
+    val themeColors by remember {
+        uiSettings.colorsId.flatMapLatest {
+            themeRepository.colors.getOrDefault(it)
         }
-    }.collectAsState(themeRepository.getDefaultTheme())
+    }.collectAsState(null)
+
+    val themeShapes by remember {
+        uiSettings.shapesId.flatMapLatest {
+            themeRepository.shapes.getOrDefault(it)
+        }
+    }.collectAsState(null)
+
+    val themeTypography by remember {
+        uiSettings.typographyId.flatMapLatest {
+            themeRepository.typographies.getOrDefault(it)
+        }
+    }.collectAsState(null)
+
+    val themeTransparencies by remember {
+        uiSettings.transparenciesId.flatMapLatest {
+            themeRepository.transparencies.getOrDefault(it)
+        }
+    }.collectAsState(null)
 
     val colorSchemePref by remember { uiSettings.colorScheme }.collectAsState(
         ColorSchemePref.System
@@ -45,56 +58,32 @@ fun LauncherTheme(
     val darkTheme =
         colorSchemePref == ColorSchemePref.Dark || colorSchemePref == ColorSchemePref.System && isSystemInDarkTheme()
 
-    val cornerRadius by remember {
-        uiSettings.cardStyle.map {
-            it.cornerRadius.dp
-        }
-    }.collectAsState(8.dp)
-
-    val baseShape by remember {
-        uiSettings.cardStyle.map {
-            when (it.shape) {
-                SurfaceShape.Cut -> CutCornerShape(0f)
-                else -> RoundedCornerShape(0f)
-            }
-        }
-    }.collectAsState(RoundedCornerShape(0f))
+    if (themeColors == null || themeShapes == null || themeTransparencies == null || themeTypography == null) {
+        return
+    }
 
     val colorScheme = if (darkTheme) {
-        darkColorSchemeOf(theme)
+        darkColorSchemeOf(themeColors!!)
     } else {
-        lightColorSchemeOf(theme)
+        lightColorSchemeOf(themeColors!!)
     }
 
-    val font by remember { uiSettings.font }.collectAsState(
-        Font.Outfit
-    )
+    val shapes = shapesOf(themeShapes!!)
+    val typography = typographyOf(themeTypography!!)
 
-    val typography = remember(font) {
-        getTypography(context, font)
-    }
+    val transparencyScheme = transparencySchemeOf(themeTransparencies!!)
+
 
     CompositionLocalProvider(
-        LocalDarkTheme provides darkTheme
+        LocalDarkTheme provides darkTheme,
+        LocalTransparencyScheme provides transparencyScheme,
     ) {
-        MaterialTheme(
+        MaterialExpressiveTheme(
             colorScheme = colorScheme,
             typography = typography,
-            shapes = Shapes(
-                extraSmall = baseShape.copy(CornerSize(cornerRadius / 3f)),
-                small = baseShape.copy(CornerSize(cornerRadius / 3f * 2f)),
-                medium = baseShape.copy(CornerSize(cornerRadius)),
-                large = baseShape.copy(CornerSize((cornerRadius / 3f * 4f).coerceAtMost(16.dp))),
-                extraLarge = baseShape.copy(CornerSize((cornerRadius / 3f * 7f).coerceAtMost(28.dp))),
-            ),
+            shapes = shapes,
             content = content
         )
     }
 }
 
-fun getTypography(context: Context, font: Font?): Typography {
-    return when (font) {
-        Font.System -> getDeviceDefaultTypography(context)
-        else -> DefaultTypography
-    }
-}

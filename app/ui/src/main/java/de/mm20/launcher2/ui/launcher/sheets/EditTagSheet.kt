@@ -1,16 +1,21 @@
 package de.mm20.launcher2.ui.launcher.sheets
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,38 +28,37 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Apps
-import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.EmojiEmotions
-import androidx.compose.material.icons.rounded.Tag
-import androidx.compose.material.icons.rounded.Warning
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FlexibleBottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.ToggleButton
+import androidx.compose.material3.ToggleButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -65,7 +69,7 @@ import de.mm20.launcher2.icons.LauncherIcon
 import de.mm20.launcher2.search.Tag
 import de.mm20.launcher2.ui.R
 import de.mm20.launcher2.ui.common.IconPicker
-import de.mm20.launcher2.ui.component.BottomSheetDialog
+import de.mm20.launcher2.ui.component.BottomSheet
 import de.mm20.launcher2.ui.component.ShapedLauncherIcon
 import de.mm20.launcher2.ui.component.SmallMessage
 import de.mm20.launcher2.ui.component.emojipicker.EmojiPicker
@@ -74,45 +78,176 @@ import de.mm20.launcher2.ui.locals.LocalGridSettings
 
 @Composable
 fun EditTagSheet(
+    expanded: Boolean,
     tag: String?,
     onDismiss: () -> Unit,
     onTagSaved: (String) -> Unit = {},
 ) {
-    val viewModel: EditTagSheetVM = viewModel()
 
-    val density = LocalDensity.current
+    BottomSheet(
+        state = tag to expanded,
+        expanded = { it.second },
+    ) { (tag, _) ->
+        var confirmDismiss by remember { mutableStateOf(false) }
+        val viewModel: EditTagSheetVM = viewModel()
+        val isCreatingNewTag = tag == null
 
-    LaunchedEffect(tag) {
-        viewModel.init(tag, with(density) { 56.dp.toPx().toInt() })
-    }
-
-    if (viewModel.loading) return
-
-    BottomSheetDialog(
-        bottomSheetState = rememberModalBottomSheetState(true),
-        onDismissRequest = {
-            if (viewModel.page == EditTagSheetPage.CustomizeTag) {
-                viewModel.save()
-                onTagSaved(viewModel.tagName)
-            }
-            onDismiss()
+        val density = LocalDensity.current
+        LaunchedEffect(tag) {
+            viewModel.init(tag, with(density) { 56.dp.toPx().toInt() })
         }
-    ) {
-        when (viewModel.page) {
-            EditTagSheetPage.CreateTag -> CreateNewTagPage(viewModel, it)
-            EditTagSheetPage.PickItems -> PickItems(viewModel, it)
-            EditTagSheetPage.CustomizeTag -> CustomizeTag(viewModel, it)
-            EditTagSheetPage.PickIcon -> PickIcon(viewModel, it)
+        if (viewModel.loading) return@BottomSheet
+
+        if (confirmDismiss) {
+            AlertDialog(
+                onDismissRequest = { confirmDismiss = false },
+                dismissButton = {
+                    OutlinedButton(onClick = {
+                        confirmDismiss = false
+                    }) {
+                        Text(stringResource(android.R.string.cancel))
+                    }
+                },
+                confirmButton = {
+                    Button(onClick = {
+                        confirmDismiss = false
+                        onDismiss()
+                    }) {
+                        Text(stringResource(R.string.action_quit))
+                    }
+                },
+                text = {
+                    Text(stringResource(R.string.dialog_discard_unsaved))
+                }
+            )
+        }
+
+        Column {
+            CenterAlignedTopAppBar(
+                title = {
+                    when (viewModel.page) {
+                        EditTagSheetPage.CreateTag,
+                        EditTagSheetPage.CustomizeTag -> {
+                            Text(stringResource(if (isCreatingNewTag) R.string.create_tag_title else R.string.edit_tag_title))
+                        }
+
+                        EditTagSheetPage.PickItems -> {
+                            Text(stringResource(R.string.tag_select_items))
+                        }
+
+                        else -> {}
+                    }
+                },
+                navigationIcon = {
+                    if (viewModel.page == EditTagSheetPage.PickIcon) {
+                        FilledTonalIconButton(onClick = {
+                            viewModel.closeItemPicker()
+                        }) {
+                            Icon(
+                                painterResource(R.drawable.arrow_back_24px),
+                                stringResource(R.string.menu_back)
+                            )
+                        }
+                    }
+                    if (viewModel.page == EditTagSheetPage.PickItems && viewModel.wasOnLastPage) {
+                        FilledTonalIconButton(onClick = {
+                            viewModel.closeItemPicker()
+                        }) {
+                            Icon(
+                                painterResource(R.drawable.arrow_back_24px),
+                                stringResource(R.string.menu_back)
+                            )
+                        }
+                    }
+                },
+                actions = {
+                    if (viewModel.page != EditTagSheetPage.PickIcon && viewModel.page != EditTagSheetPage.PickItems || !viewModel.wasOnLastPage) {
+                        FilledTonalIconButton(
+                            onClick = {
+                                if (viewModel.page == EditTagSheetPage.PickItems || viewModel.page == EditTagSheetPage.CustomizeTag) {
+                                    confirmDismiss = true
+                                } else {
+                                    onDismiss()
+                                }
+                            },
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.close_24px),
+                                stringResource(R.string.close)
+                            )
+                        }
+                    }
+                },
+            )
+
+            AnimatedContent(
+                viewModel.page,
+                modifier = Modifier.weight(1f, false)
+            ) { page ->
+                when (page) {
+                    EditTagSheetPage.CreateTag -> CreateNewTagPage(viewModel)
+                    EditTagSheetPage.PickItems -> PickItems(viewModel)
+                    EditTagSheetPage.CustomizeTag -> CustomizeTag(viewModel)
+                    EditTagSheetPage.PickIcon -> PickIcon(viewModel)
+                }
+            }
+            AnimatedVisibility(
+                viewModel.page == EditTagSheetPage.CustomizeTag ||
+                        viewModel.page == EditTagSheetPage.CreateTag ||
+                        (viewModel.page == EditTagSheetPage.PickItems)
+            ) {
+                FlexibleBottomAppBar(
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    when (viewModel.page) {
+                        EditTagSheetPage.CreateTag -> {
+                            Button(
+                                modifier = Modifier.navigationBarsPadding(),
+                                enabled = (viewModel.tagName.isNotBlank() && viewModel.page == EditTagSheetPage.CreateTag && !viewModel.tagNameExists),
+                                onClick = { viewModel.onClickContinue() }) {
+                                Text(stringResource(R.string.action_next))
+                            }
+                        }
+
+                        EditTagSheetPage.PickItems -> {
+                            Button(
+                                modifier = Modifier.navigationBarsPadding(),
+                                enabled = viewModel.taggedItems.isNotEmpty() || viewModel.wasOnLastPage,
+                                onClick = { viewModel.onClickContinue() }) {
+                                Text(stringResource(if (viewModel.wasOnLastPage) R.string.action_done else R.string.action_next))
+                            }
+                        }
+
+                        EditTagSheetPage.CustomizeTag -> {
+                            Button(
+                                modifier = Modifier.navigationBarsPadding(),
+                                enabled = (viewModel.tagName.isNotBlank()),
+                                onClick = {
+                                    viewModel.save()
+                                    onTagSaved(viewModel.tagName)
+                                    onDismiss()
+                                }) {
+                                Text(
+                                    stringResource(if(viewModel.taggedItems.isEmpty()) R.string.menu_delete else R.string.save)
+                                )
+                            }
+                        }
+
+                        else -> {}
+                    }
+
+                }
+            }
         }
     }
 }
 
 @Composable
-fun CreateNewTagPage(viewModel: EditTagSheetVM, paddingValues: PaddingValues) {
+fun CreateNewTagPage(viewModel: EditTagSheetVM) {
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
-            .padding(paddingValues)
+            .padding(16.dp)
     ) {
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -128,59 +263,47 @@ fun CreateNewTagPage(viewModel: EditTagSheetVM, paddingValues: PaddingValues) {
             value = viewModel.tagName,
             onValueChange = { viewModel.tagName = it }
         )
-
-        Button(
-            modifier = Modifier.align(Alignment.End),
-            enabled = (viewModel.tagName.isNotBlank() && viewModel.page == EditTagSheetPage.CreateTag && !viewModel.tagNameExists)
-                    || (viewModel.page == EditTagSheetPage.PickItems && viewModel.taggedItems.isNotEmpty()),
-            onClick = { viewModel.onClickContinue() }) {
-            Text(stringResource(R.string.action_next))
-        }
     }
 }
 
 @Composable
-fun PickItems(viewModel: EditTagSheetVM, paddingValues: PaddingValues) {
+fun PickItems(viewModel: EditTagSheetVM) {
     val columns = LocalGridSettings.current.columnCount - 1
 
-    Scaffold (
-        contentWindowInsets = WindowInsets(0.dp),
-        modifier = Modifier.padding(paddingValues),
-        containerColor = Color.Transparent,
-        bottomBar = {
-            Surface (
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Box {
-                    Button(
-                        onClick = { viewModel.closeItemPicker() },
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(all = 8.dp)
-                            .padding(end = 12.dp)
-                    ) {
-                        Text(stringResource(R.string.action_next))
-                    }
-                }
-            }
+    if (viewModel.wasOnLastPage) {
+        BackHandler {
+            viewModel.closeIconPicker()
         }
+    }
+
+    LazyVerticalGrid(
+        modifier = Modifier.fillMaxWidth(),
+        columns = GridCells.Fixed(columns),
+        contentPadding = PaddingValues(16.dp)
     ) {
-        LazyVerticalGrid(
-            modifier = Modifier.fillMaxWidth(),
-            columns = GridCells.Fixed(columns),
-            contentPadding = it
-        ) {
+        items(viewModel.taggableApps) {
+            val iconSize = 32.dp.toPixels()
+            val icon by remember(it.item.key) {
+                viewModel.getIcon(it.item, iconSize.toInt())
+            }.collectAsState(null)
+            ListItem(item = it, icon = icon, onTagChanged = { tagged ->
+                if (tagged) viewModel.tagItem(it.item)
+                else viewModel.untagItem(it.item)
+            })
+        }
+
+        if (viewModel.taggableOther.isNotEmpty()) {
             item(span = { GridItemSpan(columns) }) {
-                Text(
-                    stringResource(id = R.string.tag_select_items),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.secondary,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                Box(
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .background(MaterialTheme.colorScheme.outlineVariant)
+                        .fillMaxWidth()
+                        .height(1.dp)
                 )
             }
-            items(viewModel.taggableApps) {
+
+            items(viewModel.taggableOther) {
                 val iconSize = 32.dp.toPixels()
                 val icon by remember(it.item.key) {
                     viewModel.getIcon(it.item, iconSize.toInt())
@@ -189,29 +312,6 @@ fun PickItems(viewModel: EditTagSheetVM, paddingValues: PaddingValues) {
                     if (tagged) viewModel.tagItem(it.item)
                     else viewModel.untagItem(it.item)
                 })
-            }
-
-            if (viewModel.taggableOther.isNotEmpty()) {
-                item(span = { GridItemSpan(columns) }) {
-                    Box(
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                            .background(MaterialTheme.colorScheme.outlineVariant)
-                            .fillMaxWidth()
-                            .height(1.dp)
-                    )
-                }
-
-                items(viewModel.taggableOther) {
-                    val iconSize = 32.dp.toPixels()
-                    val icon by remember(it.item.key) {
-                        viewModel.getIcon(it.item, iconSize.toInt())
-                    }.collectAsState(null)
-                    ListItem(item = it, icon = icon, onTagChanged = { tagged ->
-                        if (tagged) viewModel.tagItem(it.item)
-                        else viewModel.untagItem(it.item)
-                    })
-                }
             }
         }
     }
@@ -248,7 +348,11 @@ fun ListItem(
                         onTagChanged(false)
                     }
                 ) {
-                    Icon(Icons.Rounded.Check, null, modifier = Modifier.padding(4.dp))
+                    Icon(
+                        painterResource(R.drawable.check_20px),
+                        null,
+                        modifier = Modifier.padding(4.dp)
+                    )
                 }
             }
         }
@@ -266,14 +370,14 @@ fun ListItem(
 
 
 @Composable
-fun CustomizeTag(viewModel: EditTagSheetVM, paddingValues: PaddingValues) {
+fun CustomizeTag(viewModel: EditTagSheetVM) {
     val iconSize = 32.dp.toPixels()
     val tagIcon by remember(viewModel.tagCustomIcon) { viewModel.tagCustomIcon }.collectAsState()
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .fillMaxWidth()
-            .padding(paddingValues)
+            .padding(16.dp)
     ) {
 
         Row(
@@ -312,7 +416,8 @@ fun CustomizeTag(viewModel: EditTagSheetVM, paddingValues: PaddingValues) {
                 contentAlignment = Alignment.Center,
             ) {
                 if (tagIcon != null) {
-                    var icon = remember(viewModel.tagIcon) { viewModel.tagIcon }.collectAsState(null)
+                    var icon =
+                        remember(viewModel.tagIcon) { viewModel.tagIcon }.collectAsState(null)
                     ShapedLauncherIcon(
                         size = 56.dp,
                         icon = { icon.value },
@@ -320,7 +425,7 @@ fun CustomizeTag(viewModel: EditTagSheetVM, paddingValues: PaddingValues) {
                     )
                 } else {
                     Icon(
-                        Icons.Rounded.Tag,
+                        painterResource(R.drawable.tag_24px),
                         null,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -333,6 +438,16 @@ fun CustomizeTag(viewModel: EditTagSheetVM, paddingValues: PaddingValues) {
                 label = { Text(stringResource(R.string.tag_name)) },
                 value = viewModel.tagName,
                 onValueChange = { viewModel.tagName = it },
+                isError = viewModel.tagName.isBlank(),
+                supportingText = if (viewModel.tagName.isBlank() || viewModel.tagNameExists) {
+                    {
+                        Text(
+                            stringResource(
+                            if (viewModel.tagNameExists) R.string.tag_exists_message
+                            else R.string.tag_name_empty_error)
+                        )
+                    }
+                } else null
             )
         }
 
@@ -394,28 +509,19 @@ fun CustomizeTag(viewModel: EditTagSheetVM, paddingValues: PaddingValues) {
                 }
             }
         }
-        AnimatedVisibility(viewModel.tagNameExists || viewModel.taggedItems.isEmpty() || viewModel.tagName.isEmpty()) {
-            SmallMessage(
-                modifier = Modifier.fillMaxWidth(),
-                icon = Icons.Rounded.Warning,
-                text = stringResource(
-                    if (viewModel.taggedItems.isEmpty()) R.string.tag_no_items_message
-                    else if (viewModel.tagNameExists) R.string.tag_exists_message
-                    else R.string.tag_empty_name
-                )
-            )
-        }
     }
 }
 
 @Composable
 fun PickIcon(
     viewModel: EditTagSheetVM,
-    paddingValues: PaddingValues
 ) {
-    val icon by remember (viewModel.tagCustomIcon) { viewModel.tagCustomIcon }.collectAsState()
+    BackHandler {
+        viewModel.closeIconPicker()
+    }
+    val icon by remember(viewModel.tagCustomIcon) { viewModel.tagCustomIcon }.collectAsState()
     val tag = Tag(viewModel.tagName)
-    var selectedTabIndex = remember {
+    val selectedTabIndex = remember {
         mutableIntStateOf(
             when (icon) {
                 is CustomTextIcon -> 1
@@ -426,25 +532,49 @@ fun PickIcon(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(paddingValues)
+            .padding(top = 16.dp)
+            .padding(horizontal = 16.dp)
     ) {
-        SingleChoiceSegmentedButtonRow(
+        Row(
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)
         ) {
-            SegmentedButton(
-                selected = selectedTabIndex.intValue == 0,
-                icon = { Icon(Icons.Rounded.Apps, null) },
-                label = { Text("Icon") },
-                onClick = { selectedTabIndex.intValue = 0 },
-                shape = SegmentedButtonDefaults.itemShape(0, 2)
-            )
-            SegmentedButton(
-                selected = selectedTabIndex.intValue == 1,
-                icon = { Icon(Icons.Rounded.EmojiEmotions, null) },
-                label = { Text("Emoji") },
-                onClick = { selectedTabIndex.intValue = 1 },
-                shape = SegmentedButtonDefaults.itemShape(1, 2)
-            )
+            ToggleButton(
+                modifier = Modifier.weight(1f),
+                checked = selectedTabIndex.intValue == 0,
+                onCheckedChange = { selectedTabIndex.intValue = 0 },
+                shapes = ButtonGroupDefaults.connectedLeadingButtonShapes()
+            ) {
+                Icon(
+                    painterResource(
+                        if (selectedTabIndex.intValue == 0) R.drawable.check_20px else R.drawable.apps_20px
+                    ),
+                    null,
+                    modifier = Modifier
+                        .padding(end = ToggleButtonDefaults.IconSpacing)
+                        .size(
+                            ToggleButtonDefaults.IconSize
+                        )
+                )
+                Text(stringResource(R.string.tag_icon_customicon))
+            }
+            ToggleButton(
+                modifier = Modifier.weight(1f),
+                checked = selectedTabIndex.intValue == 1,
+                onCheckedChange = { selectedTabIndex.intValue = 1 },
+                shapes = ButtonGroupDefaults.connectedTrailingButtonShapes()
+            ) {
+                Icon(
+                    painterResource(
+                        if (selectedTabIndex.intValue == 1) R.drawable.check_20px else R.drawable.mood_20px
+                    ),
+                    null,
+                    modifier = Modifier
+                        .padding(end = ToggleButtonDefaults.IconSpacing)
+                        .size(ToggleButtonDefaults.IconSize)
+                )
+                Text(stringResource(R.string.tag_icon_emoji))
+            }
         }
         AnimatedContent(
             selectedTabIndex.intValue,
@@ -455,6 +585,10 @@ fun PickIcon(
                     IconPicker(
                         searchable = tag,
                         onSelect = { viewModel.selectIcon(it) },
+                        contentPadding = PaddingValues(
+                            bottom = 16.dp + WindowInsets.navigationBars.asPaddingValues()
+                                .calculateBottomPadding()
+                        )
                     )
                 }
 
@@ -466,6 +600,10 @@ fun PickIcon(
                         onEmojiSelected = {
                             viewModel.selectIcon(CustomTextIcon(text = it))
                         },
+                        contentPadding = PaddingValues(
+                            bottom = 16.dp + WindowInsets.navigationBars.asPaddingValues()
+                                .calculateBottomPadding()
+                        )
                     )
                 }
             }

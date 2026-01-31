@@ -1,14 +1,13 @@
 package de.mm20.launcher2.ui.launcher.widgets
 
-import androidx.compose.animation.graphics.res.animatedVectorResource
-import androidx.compose.animation.graphics.res.rememberAnimatedVectorPainter
-import androidx.compose.animation.graphics.vector.AnimatedImageVector
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarResult
@@ -28,11 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -62,7 +58,7 @@ fun WidgetColumn(
 
 
     Column(
-        modifier = modifier
+        modifier = modifier.fillMaxWidth()
     ) {
         val scope = rememberCoroutineScope()
         Column {
@@ -114,7 +110,7 @@ fun WidgetColumn(
                                 swapThresholds[i][0] = it.positionInParent().y
                                 swapThresholds[i][1] = it.positionInParent().y + it.size.height
                             }
-                            .padding(top = 8.dp)
+                            .padding(top = if (i > 0) 8.dp else 0.dp)
                             .offset {
                                 IntOffset(0, offsetY.value.toInt())
                             },
@@ -154,44 +150,40 @@ fun WidgetColumn(
                 if (editMode) R.string.widget_add_widget
                 else R.string.menu_edit_widgets
             )
-            val icon =
-                AnimatedImageVector.animatedVectorResource(R.drawable.anim_ic_edit_add)
-            ExtendedFloatingActionButton(
+
+            Button(
                 modifier = Modifier
-                    .semantics {
-                        role = Role.Button
-                        contentDescription = title
-                    }
-                    .padding(16.dp)
-                    .align(Alignment.CenterHorizontally),
-                icon = {
-                    Icon(
-                        painter = rememberAnimatedVectorPainter(
-                            animatedImageVector = icon,
-                            atEnd = !editMode
-                        ), contentDescription = null
-                    )
-                },
-                text = {
-                    Text(title)
-                }, onClick = {
+                    .align(Alignment.CenterHorizontally)
+                    .padding(vertical = 8.dp),
+                contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+                onClick = {
                     if (!editMode) {
                         onEditModeChange(true)
                     } else {
                         addNewWidget = true
                     }
-                })
+                }
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .padding(end = ButtonDefaults.IconSpacing)
+                        .size(ButtonDefaults.IconSize),
+                    painter = painterResource(
+                        if (editMode) R.drawable.add_20px else R.drawable.edit_20px
+                    ), contentDescription = null
+                )
+                Text(title)
+            }
 
         }
     }
 
-    if (addNewWidget) {
-        WidgetPickerSheet(
-            onDismiss = { addNewWidget = false },
-            onWidgetSelected = {
-                viewModel.addWidget(it)
-                addNewWidget = false
-            }
-        )
-    }
+    WidgetPickerSheet(
+        expanded = addNewWidget,
+        onDismiss = { addNewWidget = false },
+        onWidgetSelected = {
+            viewModel.addWidget(it)
+            addNewWidget = false
+        }
+    )
 }

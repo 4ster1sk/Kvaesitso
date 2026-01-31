@@ -13,6 +13,7 @@ import de.mm20.launcher2.calculator.calculatorModule
 import de.mm20.launcher2.calendar.calendarModule
 import de.mm20.launcher2.contacts.contactsModule
 import de.mm20.launcher2.data.customattrs.customAttrsModule
+import de.mm20.launcher2.data.i18nDataModule
 import de.mm20.launcher2.searchable.searchableModule
 import de.mm20.launcher2.files.filesModule
 import de.mm20.launcher2.icons.iconsModule
@@ -30,6 +31,7 @@ import de.mm20.launcher2.locations.locationsModule
 import de.mm20.launcher2.permissions.permissionsModule
 import de.mm20.launcher2.data.plugins.dataPluginsModule
 import de.mm20.launcher2.devicepose.devicePoseModule
+import de.mm20.launcher2.feed.feedModule
 import de.mm20.launcher2.plugins.servicesPluginsModule
 import de.mm20.launcher2.preferences.preferencesModule
 import de.mm20.launcher2.profiles.profilesModule
@@ -96,6 +98,8 @@ class LauncherApplication : Application(), CoroutineScope, ImageLoaderFactory {
                     backupModule,
                     devicePoseModule,
                     profilesModule,
+                    i18nDataModule,
+                    feedModule,
                 )
             )
         }

@@ -51,8 +51,8 @@ import de.mm20.launcher2.ui.launcher.search.website.WebsiteResults
 import de.mm20.launcher2.ui.launcher.search.wikipedia.ArticleResults
 import de.mm20.launcher2.ui.launcher.sheets.HiddenItemsSheet
 import de.mm20.launcher2.ui.launcher.sheets.LocalBottomSheetManager
-import de.mm20.launcher2.ui.locals.LocalCardStyle
 import de.mm20.launcher2.ui.locals.LocalGridSettings
+import de.mm20.launcher2.ui.theme.transparency.transparency
 
 @Composable
 fun SearchColumn(
@@ -61,6 +61,7 @@ fun SearchColumn(
     state: LazyListState = rememberLazyListState(),
     reverse: Boolean = false,
     userScrollEnabled: Boolean = true,
+    onHideKeyboard: () -> Unit = {},
 ) {
 
     val columns = LocalGridSettings.current.columnCount
@@ -74,6 +75,7 @@ fun SearchColumn(
 
     val hideFavs by viewModel.hideFavorites
     val favoritesEnabled by viewModel.favoritesEnabled.collectAsState(false)
+    val allAppsEnabled by viewModel.allAppsEnabled.collectAsState(false)
 
     val apps = viewModel.appResults
     val workApps = viewModel.workAppResults
@@ -174,11 +176,15 @@ fun SearchColumn(
                         compactTags = compactTags,
                         editButton = favoritesEditButton
                     )
+                } else {
+                    // Empty item to maintain scroll position
+                    item(key = "favorites") {
+                    }
                 }
 
-                if (isSearchEmpty && profiles.size > 1) {
+                if (isSearchEmpty && profiles.size > 1 && allAppsEnabled) {
                     AppResults(
-                        apps = when(profiles.getOrNull(selectedAppProfileIndex)?.type) {
+                        apps = when (profiles.getOrNull(selectedAppProfileIndex)?.type) {
                             Profile.Type.Private -> privateApps
                             Profile.Type.Work -> workApps
                             else -> apps
@@ -188,6 +194,7 @@ fun SearchColumn(
                         selectedProfileIndex = selectedAppProfileIndex,
                         onProfileSelected = {
                             selectedAppProfileIndex = it
+                            onHideKeyboard()
                         },
                         isProfileLocked = profileStates.getOrNull(selectedAppProfileIndex)?.locked == true,
                         onProfileLockChange = { p, l ->
@@ -200,7 +207,7 @@ fun SearchColumn(
                         selectedIndex = selectedAppIndex,
                         onSelect = { selectedAppIndex = it },
                     )
-                } else {
+                } else if (!isSearchEmpty || allAppsEnabled) {
                     AppResults(
                         apps = apps,
                         highlightedItem = bestMatch as? Application,
@@ -348,11 +355,10 @@ fun SearchColumn(
 
 
     val sheetManager = LocalBottomSheetManager.current
-    if (sheetManager.hiddenItemsSheetShown.value) {
-        HiddenItemsSheet(
-            items = hiddenResults,
-            onDismiss = { sheetManager.dismissHiddenItemsSheet() })
-    }
+    HiddenItemsSheet(
+        expanded = sheetManager.hiddenItemsSheetShown.value,
+        items = hiddenResults,
+        onDismiss = { sheetManager.dismissHiddenItemsSheet() })
 }
 
 
@@ -369,7 +375,7 @@ fun LazyListScope.SingleResult(
                     vertical = 4.dp,
                 ),
             color = if (highlight) MaterialTheme.colorScheme.secondaryContainer
-            else MaterialTheme.colorScheme.surface.copy(LocalCardStyle.current.opacity)
+            else MaterialTheme.colorScheme.surface.copy(MaterialTheme.transparency.surface)
         ) {
             content()
         }

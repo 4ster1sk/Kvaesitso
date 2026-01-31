@@ -10,18 +10,10 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.DragIndicator
-import androidx.compose.material.icons.rounded.Tune
-import androidx.compose.material.icons.rounded.Warning
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,25 +24,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import de.mm20.launcher2.ui.R
-import de.mm20.launcher2.ui.component.Banner
 import de.mm20.launcher2.ui.component.LauncherCard
 import de.mm20.launcher2.ui.launcher.sheets.ConfigureWidgetSheet
-import de.mm20.launcher2.ui.launcher.sheets.WidgetPickerSheet
 import de.mm20.launcher2.ui.launcher.widgets.calendar.CalendarWidget
 import de.mm20.launcher2.ui.launcher.widgets.external.AppWidget
-import de.mm20.launcher2.ui.launcher.widgets.favorites.FavoritesWidget
+import de.mm20.launcher2.ui.launcher.widgets.favorites.AppsWidget
 import de.mm20.launcher2.ui.launcher.widgets.music.MusicWidget
 import de.mm20.launcher2.ui.launcher.widgets.notes.NotesWidget
 import de.mm20.launcher2.ui.launcher.widgets.weather.WeatherWidget
-import de.mm20.launcher2.ui.locals.LocalCardStyle
+import de.mm20.launcher2.ui.theme.transparency.transparency
 import de.mm20.launcher2.widgets.AppWidget
 import de.mm20.launcher2.widgets.CalendarWidget
-import de.mm20.launcher2.widgets.FavoritesWidget
+import de.mm20.launcher2.widgets.AppsWidget
 import de.mm20.launcher2.widgets.MusicWidget
 import de.mm20.launcher2.widgets.NotesWidget
 import de.mm20.launcher2.widgets.WeatherWidget
@@ -72,14 +63,14 @@ fun WidgetItem(
     var configure by rememberSaveable { mutableStateOf(false) }
 
     var isDragged by remember { mutableStateOf(false) }
-    val elevation by animateDpAsState(if (isDragged) 8.dp else 2.dp)
+    val elevation by animateDpAsState(if (isDragged) 8.dp else 0.dp)
 
     val appWidget = if (widget is AppWidget) remember(widget.config.widgetId) {
         AppWidgetManager.getInstance(context).getAppWidgetInfo(widget.config.widgetId)
     } else null
 
     val backgroundOpacity by animateFloatAsState(
-        if (widget is AppWidget && !widget.config.background && !editMode) 0f else LocalCardStyle.current.opacity,
+        if (widget is AppWidget && !widget.config.background && !editMode) 0f else MaterialTheme.transparency.surface,
         label = "widgetCardBackgroundOpacity",
     )
 
@@ -95,7 +86,7 @@ fun WidgetItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.DragIndicator,
+                        painterResource(R.drawable.drag_indicator_24px),
                         contentDescription = null,
                         modifier = Modifier.draggable(
                             state = draggableState,
@@ -115,7 +106,7 @@ fun WidgetItem(
                             is WeatherWidget -> stringResource(R.string.widget_name_weather)
                             is MusicWidget -> stringResource(R.string.widget_name_music)
                             is CalendarWidget -> stringResource(R.string.widget_name_calendar)
-                            is FavoritesWidget -> stringResource(R.string.widget_name_favorites)
+                            is AppsWidget -> stringResource(R.string.widget_name_apps)
                             is NotesWidget -> stringResource(R.string.widget_name_notes)
                             is AppWidget -> remember(widget.config.widgetId) {
                                 appWidget?.loadLabel(
@@ -135,13 +126,13 @@ fun WidgetItem(
                         configure = true
                     }) {
                         Icon(
-                            imageVector = Icons.Rounded.Tune,
+                            painterResource(R.drawable.tune_24px),
                             contentDescription = stringResource(R.string.settings)
                         )
                     }
                     IconButton(onClick = { onWidgetRemove() }) {
                         Icon(
-                            imageVector = Icons.Rounded.Delete,
+                            painterResource(R.drawable.delete_24px),
                             contentDescription = stringResource(R.string.widget_action_remove)
                         )
                     }
@@ -161,8 +152,8 @@ fun WidgetItem(
                         CalendarWidget(widget)
                     }
 
-                    is FavoritesWidget -> {
-                        FavoritesWidget(widget)
+                    is AppsWidget -> {
+                        AppsWidget(widget)
                     }
 
                     is NotesWidget -> {
@@ -183,11 +174,10 @@ fun WidgetItem(
             }
         }
     }
-    if (configure) {
-        ConfigureWidgetSheet(
-            widget = widget,
-            onWidgetUpdated = onWidgetUpdate,
-            onDismiss = { configure = false },
-        )
-    }
+    ConfigureWidgetSheet(
+        expanded = configure,
+        widget = widget,
+        onWidgetUpdated = onWidgetUpdate,
+        onDismiss = { configure = false },
+    )
 }
