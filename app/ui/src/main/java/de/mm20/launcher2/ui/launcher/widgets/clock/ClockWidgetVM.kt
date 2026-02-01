@@ -60,6 +60,8 @@ class ClockWidgetVM : ViewModel(), KoinComponent {
 
     val compactLayout = settings.compact
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+    val borderless = settings.borderless
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
     val clockStyle = settings.clockStyle
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
 

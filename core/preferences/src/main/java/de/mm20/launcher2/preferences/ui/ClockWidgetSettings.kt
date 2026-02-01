@@ -28,6 +28,14 @@ class ClockWidgetSettings internal constructor(
             it.copy(clockWidgetCompact = compact)
         }
     }
+    val borderless
+        get() = launcherDataStore.data.map { it.clockWidgetBorderless }
+
+    fun setBorderless(borderless: Boolean) {
+        launcherDataStore.update {
+            it.copy(clockWidgetBorderless = borderless)
+        }
+    }
 
     val parts
         get() = launcherDataStore.data.map {

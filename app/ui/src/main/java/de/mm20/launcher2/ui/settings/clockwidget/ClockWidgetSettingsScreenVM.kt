@@ -23,6 +23,11 @@ class ClockWidgetSettingsScreenVM : ViewModel(), KoinComponent {
     fun setCompact(compact: Boolean) {
         settings.setCompact(compact)
     }
+    val borderless = settings.borderless
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), null)
+    fun setBorderless(borderless: Boolean) {
+        settings.setBorderless(borderless)
+    }
 
     val availableClockStyles = combine(settings.digital1, settings.analog, settings.custom) { digital1, analog, custom ->
         listOf(
