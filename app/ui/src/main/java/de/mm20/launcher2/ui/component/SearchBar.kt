@@ -63,7 +63,7 @@ fun SearchBar(
     menu: @Composable RowScope.() -> Unit = {},
     actions: @Composable ColumnScope.() -> Unit = {},
     onKeyboardActionGo: (KeyboardActionScope.() -> Unit)? = null,
-    placeholder: String
+    placeholder: String? = null
 ) {
 
     val transition = updateTransition(level, label = "Searchbar")
@@ -161,7 +161,7 @@ fun SearchBar(
                     ) {
                         if (value.isEmpty()) {
                             Text(
-                                text = placeholder,
+                                text = placeholder ?: context.getString(R.string.search_bar_placeholder),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = contentColor
                             )

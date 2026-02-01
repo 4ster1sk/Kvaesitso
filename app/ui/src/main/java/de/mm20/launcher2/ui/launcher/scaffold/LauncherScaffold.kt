@@ -178,6 +178,7 @@ internal data class ScaffoldConfiguration(
      */
     val finishOnBack: Boolean = false,
     val darkSearchBar: Boolean = false,
+    val searchBarPlaceholder: String? = null,
 ) {
     val searchBarTap = ScaffoldGesture(
         component = searchComponent,
@@ -1529,6 +1530,7 @@ internal fun LauncherScaffold(
                     } else null,
                     highlightedAction = highlightedResult as? SearchAction,
                     darkColors = config.darkSearchBar,
+                    placeholder = config.searchBarPlaceholder,
                     isSearchOpen = state.currentComponent is SearchComponent && state.isSettledOnSecondaryPage ||
                             config.homeComponent is SearchComponent && !state.isSettledOnSecondaryPage,
                 )
