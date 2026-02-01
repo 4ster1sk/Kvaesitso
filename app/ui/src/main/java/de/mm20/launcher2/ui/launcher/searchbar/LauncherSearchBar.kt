@@ -49,7 +49,7 @@ fun LauncherSearchBar(
     bottomSearchBar: Boolean = false,
     searchBarOffset: () -> Int = { 0 },
     onKeyboardActionGo: (KeyboardActionScope.() -> Unit)? = null,
-    placeholder: String
+    placeholder: String? = null,
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }

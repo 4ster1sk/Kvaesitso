@@ -526,7 +526,7 @@ fun ConfigureClockWidgetSheet(
                     )
                     SwitchPreference(
                         title = stringResource(R.string.widget_config_appwidget_borderless),
-                        icon = Icons.Rounded.CropFree,
+                        icon = R.drawable.crop_square_24px,
                         value = borderless == true,
                         onValueChanged = {
                             viewModel.setBorderless(it)

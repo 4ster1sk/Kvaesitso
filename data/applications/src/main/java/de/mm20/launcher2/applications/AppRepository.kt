@@ -30,6 +30,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import org.apache.commons.text.similarity.FuzzyScore
+import java.util.Locale
 import dev.esnault.wanakana.core.Wanakana
 
 interface AppRepository : SearchableRepository<Application> {
@@ -240,7 +242,8 @@ internal class AppRepositoryImpl(
     }
 
     override fun search(query: String, allowNetwork: Boolean): Flow<ImmutableList<LauncherApp>> {
-        val normalizedQuery = toRomaji(stringNormalizer.normalize(query));
+        val romajiQuery = toRomaji(query);
+        val normalizedQuery = stringNormalizer.normalize(romajiQuery);
         
         return installedApps.map { apps ->
             withContext(Dispatchers.Default) {
@@ -268,7 +271,7 @@ internal class AppRepositoryImpl(
                             score = score
                         )
                     })
-                    appResults.addAll(apps.filter { matches(toRomaji(it.label), queryRomaji) })
+                    appResults.addAll(apps.filter { matches(toRomaji(it.label), romajiQuery) })
 
                     val componentName = ComponentName.unflattenFromString(query)
                     getActivityByComponentName(componentName)?.let { appResults.add(it) }
@@ -305,8 +308,8 @@ internal class AppRepositoryImpl(
     }
 
     private fun matches(label: String, query: String): Boolean {
-        val normalizedLabel = label.normalize()
-        val normalizedQuery = query.normalize()
+        val normalizedLabel = stringNormalizer.normalize(label)
+        val normalizedQuery = stringNormalizer.normalize(query)
         if (normalizedLabel.contains(normalizedQuery)) return true
         val fuzzyScore = FuzzyScore(Locale.getDefault())
         return fuzzyScore.fuzzyScore(normalizedLabel, normalizedQuery) >= query.length * 1.5
