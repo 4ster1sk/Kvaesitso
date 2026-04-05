@@ -88,6 +88,7 @@
     <string name="wind_north_west">North west</string>
     <!-- Wind direction, used in weather widget -->
     <string name="wind_north_north_west">North north west</string>
+    <string name="uv_index">UV %1$d</string>
     <!-- No rain or snow, used in weather widget -->
     <!-- The URL of the Wikipedia instance that is used per default. Can be overridden by user.
      This should point to the Wikipedia in the given language. If no such Wikipedia exists,
@@ -427,6 +428,7 @@
     <string name="preference_theme_light">Light</string>
     <string name="preference_theme_dark">Dark</string>
     <string name="preference_screen_colors">Color scheme</string>
+    <string name="preference_create_colors">New color scheme</string>
     <string name="preference_colors_default">Default</string>
     <string name="preference_colors_high_contrast">High contrast</string>
     <string name="preference_colors_bw">Black and white</string>
@@ -435,12 +437,15 @@
     <string name="preference_mdy_color_source_system">System</string>
     <string name="preference_mdy_color_source_wallpaper">Wallpaper</string>
     <string name="preference_screen_shapes">Shapes</string>
+    <string name="preference_create_shapes">New shapes scheme</string>
     <string name="preference_shapes_default">Default</string>
     <string name="preference_shapes_extra_round">Extra round</string>
     <string name="preference_shapes_rect">Rectangular</string>
     <string name="preference_shapes_base">Base shape</string>
     <string name="preference_screen_typography">Typography</string>
+    <string name="preference_create_typography">New typography scheme</string>
     <string name="preference_screen_transparencies">Transparency</string>
+    <string name="preference_create_transparency">New transparency scheme</string>
     <string name="preference_transparencies_default">Default</string>
     <string name="preference_transparencies_semi_transparent">Semi-transparent</string>
     <string name="preference_font">Font</string>
@@ -602,7 +607,9 @@
     <string name="preference_clockwidget_music_part">Media</string>
     <string name="preference_clockwidget_music_part_summary">Show media controls when there is an active media session</string>
     <string name="preference_clockwidget_battery_part">Battery</string>
-    <string name="preference_clockwidget_battery_part_summary">Show the current battery level when the battery is low or charging</string>
+    <string name="preference_clockwidget_battery_part_always_show">Always show</string>
+    <string name="preference_clockwidget_battery_part_show">Show when low or charging</string>
+    <string name="preference_clockwidget_battery_part_hide">Off</string>
     <string name="preference_clockwidget_alarm_part">Alarms</string>
     <string name="preference_clockwidget_alarm_part_summary">Show alarms that will ring within the next 8 hours</string>
     <string name="preference_screen_backup">Backup and restore</string>
@@ -682,6 +689,8 @@
     <string name="preference_widgets_edit_button_summary">Show a button to add, remove and rearrange widgets</string>
     <string name="preference_widgets_on_home_screen">Widgets on home screen</string>
     <string name="preference_widgets_on_home_screen_summary">Show widgets on the home screen instead of a separate page</string>
+    <string name="preference_widget_screen_count">Widget screen count</string>
+    <string name="preference_widget_screen_count_info">Note: Reducing the count will automatically reset gestures assigned to disabled screens.</string>
     <string name="preference_screen_homescreen">Home screen</string>
     <string name="preference_screen_homescreen_summary">Clock, search bar, wallpaper, system bars</string>
     <string name="preference_screen_icons">Grid and icons</string>
@@ -806,6 +815,7 @@
     <string name="gesture_action_none">Do nothing</string>
     <string name="gesture_action_open_search">Open search</string>
     <string name="gesture_action_widgets">Widgets</string>
+    <string name="gesture_action_widgets_indexed">Widgets %1$d</string>
     <string name="gesture_action_launch_app">Launch app</string>
     <string name="gesture_action_notifications">Open notification drawer</string>
     <string name="gesture_action_lock_screen">Turn off screen</string>
@@ -1068,7 +1078,9 @@
     <string name="theme_import_title">Import theme</string>
     <string name="theme_bundle_name">Name</string>
     <string name="theme_bundle_author">Author</string>
-    <string name="preference_typography_fonts">Fonts</string>
+    <string name="preference_typography_fonts">Font styles</string>
+    <string name="add_font_style">Add font style</string>
+    <string name="remove_font_style">Remove this font style</string>
     <string name="font_category_device_default">Device default</string>
     <string name="font_name_device_headline">Default headline font</string>
     <string name="font_name_device_body">Device text font</string>
@@ -1077,6 +1089,7 @@
     <string name="preference_screen_locale_summary">Language, units, time format</string>
     <string name="preference_language">Language</string>
     <string name="preference_value_system_default">System default</string>
+    <string name="preference_value_disabled">Disabled</string>
     <string name="preference_form_of_address">Form of address</string>
     <string name="preference_form_of_address_neutral">Neutral</string>
     <string name="preference_form_of_address_fem">Feminine</string>
@@ -1087,9 +1100,18 @@
     <string name="preference_measurement_system_us">United States</string>
     <string name="preference_transliteration">Preferred transliteration</string>
     <string name="preference_transliteration_auto">Automatic</string>
-    <string name="preference_transliteration_disabled">Disabled</string>
+    <string name="preference_calendar_system">Calendar system</string>
+    <string name="preference_calendar_system_primary">Primary calendar</string>
+    <string name="preference_calendar_system_secondary">Secondary calendar</string>
     <string name="select_tag">Select tag</string>
     <string name="create_tag_title">New tag</string>
     <string name="edit_tag_title">Edit tag</string>
     <string name="dialog_discard_unsaved">Quit without saving?</string>
+    <string name="typo_preview_extra_short">Aa</string>
+    <string name="typo_preview_short1">Ava</string>
+    <string name="typo_preview_short2">Typ</string>
+    <string name="typo_preview_medium1">Hamburg</string>
+    <string name="typo_preview_medium2">Preview</string>
+    <string name="typo_preview_long">The quick brown fox\njumps over 1234790</string>
+    <string name="preference_category_donate">Support the development</string>
 </resources>

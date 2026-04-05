@@ -373,7 +373,6 @@
     <string name="search_action_label">Nombre</string>
     <string name="preference_clockwidget_date_part_summary">Mostrar la fecha actual</string>
     <string name="preference_screen_backup">Copia de seguridad y restauración</string>
-    <string name="preference_clockwidget_battery_part_summary">Mostrar el nivel actual de batería cuando el nivel de batería sea bajo o esté cargando</string>
     <string name="search_action_websearch_url">Plantilla de URL</string>
     <string name="preference_clockwidget_alarm_part">Alarmas</string>
     <string name="preference_layout_search_bar_position">Posición de la barra de búsqueda</string>
@@ -889,7 +888,7 @@
     <string name="preference_measurement_system_us">Estados Unidos</string>
     <string name="preference_transliteration">Transliteración preferida</string>
     <string name="preference_transliteration_auto">Automática</string>
-    <string name="preference_transliteration_disabled">Deshabilitada</string>
+    <string name="preference_value_disabled">Deshabilitada</string>
     <string name="preference_category_enabled_plugins">Activado</string>
     <string name="preference_category_installed_plugins">Instalado</string>
     <string name="widget_name_apps">Aplicaciones</string>

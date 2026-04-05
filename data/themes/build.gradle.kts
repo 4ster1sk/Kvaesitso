@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.plugin.serialization)
 }
 
@@ -48,6 +47,7 @@ dependencies {
     implementation(libs.koin.android)
 
     implementation(project(":core:base"))
+    implementation(project(":core:ktx"))
     implementation(project(":data:database"))
     implementation(project(":core:crashreporter"))
     implementation(project(":core:preferences"))

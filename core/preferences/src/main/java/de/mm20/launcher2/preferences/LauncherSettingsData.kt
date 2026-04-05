@@ -11,7 +11,7 @@ import java.util.UUID
 @Serializable
 @ConsistentCopyVisibility
 data class LauncherSettingsData internal constructor(
-    val schemaVersion: Int = 5,
+    val schemaVersion: Int = 6,
 
     val uiColorScheme: ColorScheme = ColorScheme.System,
     @Serializable(with = UUIDSerializer::class)
@@ -52,7 +52,11 @@ data class LauncherSettingsData internal constructor(
     val clockWidgetMonospaced: Boolean = false,
     val clockWidgetUseThemeColor: Boolean = false,
     val clockWidgetAlarmPart: Boolean = true,
-    val clockWidgetBatteryPart: Boolean = true,
+    @Deprecated("")
+    @SerialName("clockWidgetBatteryPart")
+    val _clockWidgetBatteryPart: Boolean = true,
+    @SerialName("clockWidgetBatteryPart2")
+    val clockWidgetBatteryPart: BatteryStatusVisibility = BatteryStatusVisibility.Show,
     val clockWidgetMusicPart: Boolean = true,
     val clockWidgetDatePart: Boolean = true,
     val clockWidgetFillHeight: Boolean = false,
@@ -145,11 +149,12 @@ data class LauncherSettingsData internal constructor(
     val surfacesShape: SurfaceShape = SurfaceShape.Rounded,
 
     val widgetsEditButton: Boolean = true,
+    val widgetScreenCount: Int = 1,
 
     val gesturesSwipeDown: GestureAction = GestureAction.Search,
     val gesturesSwipeLeft: GestureAction = GestureAction.NoAction,
     val gesturesSwipeRight: GestureAction = GestureAction.NoAction,
-    val gesturesSwipeUp: GestureAction = GestureAction.Widgets,
+    val gesturesSwipeUp: GestureAction = GestureAction.Widgets(),
     val gesturesDoubleTap: GestureAction = GestureAction.ScreenLock,
     val gesturesLongPress: GestureAction = GestureAction.NoAction,
     val gesturesHomeButton: GestureAction = GestureAction.NoAction,
@@ -202,6 +207,16 @@ data class LauncherSettingsData internal constructor(
      * automatically. null disables the transliterator.
      */
     val localeTransliterator: String? = "",
+
+    /**
+     * The ICU id of the primary calendar. `null` to use the default.
+     */
+    val localePrimaryCalendar: String? = null,
+
+    /**
+     * The ICU id of the secondary calendar. `null` to disable.
+     */
+    val localeSecondaryCalendar: String? = null,
 
     val feedProviderPackage: String? = null
 
@@ -378,7 +393,7 @@ sealed interface GestureAction {
 
     @Serializable
     @SerialName("widgets")
-    data object Widgets : GestureAction
+    data class Widgets(val target: WidgetScreenTarget = WidgetScreenTarget.Default) : GestureAction
 
     @Serializable
     @SerialName("power_menu")
@@ -447,4 +462,11 @@ enum class MeasurementSystem {
     @SerialName("metric") Metric,
     @SerialName("uk") UnitedKingdom,
     @SerialName("us") UnitedStates,
+}
+
+@Serializable
+enum class BatteryStatusVisibility {
+    @SerialName("hide") Hide,
+    @SerialName("show") Show,
+    @SerialName("always") Always
 }

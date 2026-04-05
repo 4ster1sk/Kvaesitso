@@ -198,7 +198,7 @@ internal data class ScaffoldConfiguration(
                     swipeRight,
                     doubleTap,
                     longPress,
-                    //homeButton,
+                    homeButton,
                 ).none { it.component.showSearchBar }
     }
 }
@@ -437,7 +437,7 @@ internal class LauncherScaffoldState(
         private set
 
     suspend fun onDragStarted() {
-        if (isLocked) return
+        if (isLocked || currentZOffset > 0f) return
         isDragged = true
         offsetAnimatable.stop()
         zAnimatable.stop()
@@ -445,7 +445,7 @@ internal class LauncherScaffoldState(
 
 
     fun onDrag(offset: Offset) {
-        if (isLocked) return
+        if (isLocked || currentZOffset > 0f) return
         if (currentGesture == null || (!isSettledOnSecondaryPage && currentOffset.x.absoluteValue <= touchSlop && currentOffset.y.absoluteValue <= touchSlop)) {
             currentGesture = getSwipeDirection(config, offset)
         }
@@ -602,7 +602,7 @@ internal class LauncherScaffoldState(
      */
     suspend fun onDragStopped(velocity: Velocity, disallowPageChange: Boolean = false) {
         isDragged = false
-        if (isLocked) return
+        if (isLocked || currentZOffset > 0f) return
         val velocity = when {
             !isAtTop && !isAtBottom -> velocity.copy(y = 0f)
             !isAtTop -> velocity.copy(y = velocity.y.coerceAtMost(0f))
@@ -916,7 +916,6 @@ internal class LauncherScaffoldState(
             openSearch()
             return
         }
-        lock()
         currentGesture = gesture
 
         zAnimatable.snapTo(0f)
@@ -1039,6 +1038,7 @@ internal class LauncherScaffoldState(
     suspend fun reset() {
         isSearchBarFocused = false
         currentOffset = Offset.Zero
+        currentZOffset = 0f
         unlock()
         isSettledOnSecondaryPage = false
 

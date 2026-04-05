@@ -313,7 +313,6 @@
         <item quantity="other">Voll in %1$s Minuten</item>
     </plurals>
     <string name="preference_clockwidget_date_part_summary">Das aktuelle Datum anzeigen</string>
-    <string name="preference_clockwidget_battery_part_summary">Den Akkustand anzeigen, wenn der Akku fast leer ist oder geladen wird</string>
     <string name="preference_search_appshortcuts">App-Shortcuts</string>
     <string name="missing_permission_appshortcuts_search_settings">%1$s muss als Standard-Start-App gesetzt sein, um App-Shortcuts durchsuchen zu können</string>
     <string name="missing_permission_appshortcuts_search">%1$s als Standard-Start-App festlegen, um App-Shortcuts durchsuchen zu können.</string>
@@ -850,7 +849,7 @@
     <string name="new_theme_name">(unbenannt)</string>
     <string name="preference_screen_typography">Typografie</string>
     <string name="confirmation_delete_typography_scheme">Möchten Sie das Typografie-Schema %1$s wirklich löschen?</string>
-    <string name="preference_typography_fonts">Schriften</string>
+    <string name="preference_typography_fonts">Schriftstile</string>
     <string name="font_category_device_default">Gerätestandard</string>
     <string name="font_name_device_headline">Standard-Überschriften-Schrift</string>
     <string name="font_name_device_body">Standard-Text-Schrift</string>
@@ -878,7 +877,7 @@
     <string name="preference_measurement_system_us">Vereinigte Staaten</string>
     <string name="preference_transliteration">Bevorzugte Transliteration</string>
     <string name="preference_transliteration_auto">Automatisch</string>
-    <string name="preference_transliteration_disabled">Deaktiviert</string>
+    <string name="preference_value_disabled">Deaktiviert</string>
     <string name="preference_category_enabled_plugins">Aktiviert</string>
     <string name="preference_category_installed_plugins">Installiert</string>
     <string name="tag_icon_customicon">Icon</string>
@@ -902,4 +901,25 @@
     <string name="create_tag_title">Neues Tag</string>
     <string name="edit_tag_title">Tag bearbeiten</string>
     <string name="dialog_discard_unsaved">Verlassen, ohne zu speichern?</string>
+    <string name="typo_preview_extra_short">Aa</string>
+    <string name="typo_preview_short1">Typ</string>
+    <string name="typo_preview_short2">Äöü</string>
+    <string name="typo_preview_medium1">Hamburg</string>
+    <string name="typo_preview_medium2">Größe</string>
+    <string name="typo_preview_long">Fußgänger überqueren\ndie Straße mit 1234790</string>
+    <string name="preference_create_colors">Neues Farbschema</string>
+    <string name="preference_create_shapes">Neues Formenschema</string>
+    <string name="preference_create_typography">Neues Typografieschema</string>
+    <string name="preference_create_transparency">Neues Transparenzschema</string>
+    <string name="add_font_style">Schriftstil hinzufügen</string>
+    <string name="remove_font_style">Diesen Schriftstil entfernen</string>
+    <string name="preference_widget_screen_count">Anzahl Widget-Seiten</string>
+    <string name="gesture_action_widgets_indexed">Widgets %1$d</string>
+    <string name="preference_calendar_system">Kalendersystem</string>
+    <string name="preference_calendar_system_primary">Primärer Kalender</string>
+    <string name="preference_calendar_system_secondary">Sekundärer Kalender</string>
+    <string name="preference_clockwidget_battery_part_always_show">Immer anzeigen</string>
+    <string name="preference_clockwidget_battery_part_show">Wenn niedrig und beim Laden</string>
+    <string name="preference_clockwidget_battery_part_hide">Aus</string>
+    <string name="preference_category_donate">Entwicklung unterstützen</string>
 </resources>

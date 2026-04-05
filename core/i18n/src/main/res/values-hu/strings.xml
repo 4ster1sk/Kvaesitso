@@ -314,7 +314,6 @@
     <string name="plugin_type_weather">Időjáráselőrejelzési szolgáltató</string>
     <string name="plugin_weather_provider_enable">Beállítás időjáráselőrejelzési szolgáltatónak</string>
     <string name="preference_clock_widget_alignment_bottom">Alulra</string>
-    <string name="preference_clockwidget_battery_part_summary">Akkumulátor jelenlegi töltöttségi szintjének megjelenítése, amikor az akkumulátor lemerült vagy töltődik</string>
     <string name="preference_clockwidget_alarm_part_summary">Azon riasztások megjelenítése, amelyek a következő 8 órán belül megszólalnak</string>
     <string name="preference_logs">Naplók</string>
     <string name="preference_logs_summary">Alkalmazásnaplók megtekintése és exportálása</string>
@@ -878,7 +877,7 @@
     <string name="preference_measurement_system_us">Egyesült Államok</string>
     <string name="preference_transliteration">Előnyben részesített átírás</string>
     <string name="preference_transliteration_auto">Automatikus</string>
-    <string name="preference_transliteration_disabled">Letiltva</string>
+    <string name="preference_value_disabled">Letiltva</string>
     <string name="select_tag">Címke kiválasztása</string>
     <string name="widget_name_apps">Alkalmazások</string>
     <string name="preference_category_enabled_plugins">Engedélyezve</string>
@@ -902,4 +901,27 @@
     <string name="tag_name_empty_error">A név nem lehet üres</string>
     <string name="create_tag_title">Új címke</string>
     <string name="edit_tag_title">Címke szerkesztése</string>
+    <string name="typo_preview_extra_short">Aa</string>
+    <string name="typo_preview_short1">Éva</string>
+    <string name="typo_preview_short2">Típus</string>
+    <string name="typo_preview_medium1">Budapest</string>
+    <string name="typo_preview_medium2">Előnézet</string>
+    <string name="typo_preview_long">Árvíztűrő tükörfúrógép\n0123456789</string>
+    <string name="preference_create_colors">Új színséma</string>
+    <string name="preference_create_shapes">Új alakzatséma</string>
+    <string name="preference_create_typography">Új tipográfiai séma</string>
+    <string name="preference_create_transparency">Új átlátszósági séma</string>
+    <string name="add_font_style">Betűtípus hozzáadása</string>
+    <string name="remove_font_style">Betűtípus eltávolítása</string>
+    <string name="preference_widget_screen_count">Modulképernyők száma</string>
+    <string name="preference_widget_screen_count_info">Megjegyzés: A szám csökkentése automatikusan törli a letiltott képernyőkhöz rendelt gesztusokat.</string>
+    <string name="gesture_action_widgets_indexed">Modulok: %1$d</string>
+    <string name="preference_calendar_system">Naptárrendszer</string>
+    <string name="preference_calendar_system_primary">Elsődleges naptár</string>
+    <string name="preference_calendar_system_secondary">Másodlagos naptár</string>
+    <string name="preference_category_donate">Fejlesztés támogatása</string>
+    <string name="preference_clockwidget_battery_part_always_show">Megjelenítés mindig</string>
+    <string name="preference_clockwidget_battery_part_show">Megjelenítés csak akkor, amikor alacsony vagy töltődik</string>
+    <string name="preference_clockwidget_battery_part_hide">Kikapcsolás</string>
+    <string name="uv_index">UV: %1$d</string>
 </resources>

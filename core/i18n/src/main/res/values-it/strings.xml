@@ -258,7 +258,6 @@
     <string name="preference_clockwidget_date_part_summary">Mostra la data corrente</string>
     <string name="preference_clockwidget_music_part">Multimedia</string>
     <string name="preference_clockwidget_battery_part">Batteria</string>
-    <string name="preference_clockwidget_battery_part_summary">Mostra il livello della batteria quando la batteria è scarica o in ricarica</string>
     <string name="preference_clockwidget_alarm_part">Sveglie</string>
     <string name="preference_clockwidget_alarm_part_summary">Mostra le sveglie che suoneranno nelle prossime 8 ore</string>
     <string name="preference_screen_search">Ricerca</string>
@@ -858,7 +857,7 @@
     <string name="new_theme_name">(senza titolo)</string>
     <string name="preference_screen_typography">Tipografia</string>
     <string name="confirmation_delete_typography_scheme">Vuoi davvero eliminare lo schema tipografico %1$s?</string>
-    <string name="preference_typography_fonts">Font</string>
+    <string name="preference_typography_fonts">Stili del font</string>
     <string name="font_category_device_default">Dispositivo predefinito</string>
     <string name="font_name_device_headline">Font predefinito per il titolo</string>
     <string name="font_name_device_body">Font del testo del dispositivo</string>
@@ -889,7 +888,7 @@
     <string name="preference_measurement_system_uk">Regno Unito</string>
     <string name="preference_transliteration">Traslitterazione preferita</string>
     <string name="preference_transliteration_auto">Automatica</string>
-    <string name="preference_transliteration_disabled">Disabilitata</string>
+    <string name="preference_value_disabled">Disabilitata</string>
     <string name="select_tag">Seleziona tag</string>
     <string name="widget_name_apps">App</string>
     <string name="preference_category_enabled_plugins">Abilitato</string>
@@ -913,4 +912,27 @@
     <string name="tag_name_empty_error">Il nome non può essere vuoto</string>
     <string name="create_tag_title">Nuovo tag</string>
     <string name="edit_tag_title">Modifica tag</string>
+    <string name="typo_preview_extra_short">Aa</string>
+    <string name="typo_preview_short1">Mano</string>
+    <string name="typo_preview_short2">Vino</string>
+    <string name="typo_preview_medium1">Scompiglio</string>
+    <string name="typo_preview_medium2">Libertà</string>
+    <string name="typo_preview_long">Quel bizzarro caffè costa 124,79€\nma già 0 esperti l’han capito</string>
+    <string name="preference_create_colors">Nuova combinazione di colori</string>
+    <string name="preference_create_shapes">Nuova combinazione di forme</string>
+    <string name="preference_create_typography">Nuovo combinazione tipografica</string>
+    <string name="preference_create_transparency">Nuovo combinazione di trasparenza</string>
+    <string name="add_font_style">Aggiungi stile del font</string>
+    <string name="remove_font_style">Rimuovi questo stile del font</string>
+    <string name="preference_category_donate">Sostieni lo sviluppo</string>
+    <string name="preference_widget_screen_count">Conteggio schermate widget</string>
+    <string name="preference_widget_screen_count_info">Nota: riducendo il conteggio, i gesti assegnati alle schermate disabilitate verranno automaticamente reimpostati.</string>
+    <string name="gesture_action_widgets_indexed">Widget %1$d</string>
+    <string name="preference_calendar_system">Il sistema di calendario preferito (ad esempio calendario gregoriano, calendario ebraico, calendario persiano)</string>
+    <string name="preference_calendar_system_primary">Calendario primario</string>
+    <string name="preference_calendar_system_secondary">Calendario secondario</string>
+    <string name="preference_clockwidget_battery_part_always_show">Mostra sempre</string>
+    <string name="preference_clockwidget_battery_part_show">Mostra quando è scarica o in carica</string>
+    <string name="preference_clockwidget_battery_part_hide">Nascondi</string>
+    <string name="uv_index">UV %1$d</string>
 </resources>

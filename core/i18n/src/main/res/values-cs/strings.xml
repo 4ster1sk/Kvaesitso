@@ -39,7 +39,6 @@
     <string name="preference_about_license_summary">Licencováno pod GNU General Public License 3.0</string>
     <string name="preference_screen_debug_summary">Nástroje pro řešení potíží</string>
     <string name="preference_clockwidget_date_part_summary">Zobrazit aktuální datum</string>
-    <string name="preference_clockwidget_battery_part_summary">Zobrazit aktuální úroveň baterie, když je vybitá nebo se nabíjí</string>
     <string name="preference_restore_summary">Importovat dříve vytvořenou zálohu</string>
     <string name="preference_search_favorites_summary">Zobrazit připnuté a často používané položky nad mřízkou s aplikacemi</string>
     <string name="preference_search_calculator_summary">Vyhodnocování matematických výrazů</string>
@@ -858,7 +857,7 @@
     <string name="confirmation_delete_transparencies_scheme">Opravdu chcete odstranit schéma průhlednosti %1$s?</string>
     <string name="preference_screen_typography">Typografie</string>
     <string name="confirmation_delete_typography_scheme">Opravdu chcete odstranit schéma typografie %1$s?</string>
-    <string name="preference_typography_fonts">Písma</string>
+    <string name="preference_typography_fonts">Styly písma</string>
     <string name="font_category_device_default">Podle zařízení</string>
     <string name="font_name_device_headline">Výchozí písmo nadpisu</string>
     <string name="font_name_device_body">Písmo textu zařízení</string>
@@ -889,7 +888,7 @@
     <string name="preference_measurement_system_us">Spojené státy</string>
     <string name="preference_transliteration">Preferovaná transkripce</string>
     <string name="preference_transliteration_auto">Automatická</string>
-    <string name="preference_transliteration_disabled">Zakázaná</string>
+    <string name="preference_value_disabled">Zakázaná</string>
     <string name="select_tag">Vybrat štítek</string>
     <string name="widget_name_apps">Aplikace</string>
     <string name="preference_category_enabled_plugins">Povoleno</string>
@@ -913,4 +912,27 @@
     <string name="tag_name_empty_error">Název nemůže být prázdný</string>
     <string name="create_tag_title">Nový štítek</string>
     <string name="edit_tag_title">Upravit štítek</string>
+    <string name="preference_create_colors">Nové barevné schéma</string>
+    <string name="preference_create_shapes">Nové schéma tvarů</string>
+    <string name="preference_create_typography">Nový typografický styl</string>
+    <string name="preference_create_transparency">Nový transparentní styl</string>
+    <string name="add_font_style">Přidat styly písma</string>
+    <string name="remove_font_style">Odstranit tento styl písma</string>
+    <string name="typo_preview_extra_short">Aa</string>
+    <string name="typo_preview_short1">Ava</string>
+    <string name="typo_preview_short2">Typ</string>
+    <string name="typo_preview_medium1">Hamburg</string>
+    <string name="typo_preview_medium2">Náhled</string>
+    <string name="typo_preview_long">Hleď, příliš žluťoučký kůň úpěl ďábelské ódy.\n1234567890</string>
+    <string name="preference_widget_screen_count">Počet obrazovek s widgety</string>
+    <string name="preference_widget_screen_count_info">Upozornění: snížení počtu automaticky resetuje gesta přiřazená k zakázaným obrazovkám.</string>
+    <string name="gesture_action_widgets_indexed">Widgety %1$d</string>
+    <string name="preference_calendar_system">Kalendářový systém</string>
+    <string name="preference_calendar_system_primary">Primární kalendář</string>
+    <string name="preference_calendar_system_secondary">Sekundární kalendář</string>
+    <string name="preference_category_donate">Podpořte vývoj</string>
+    <string name="preference_clockwidget_battery_part_always_show">Vždy zobrazit</string>
+    <string name="preference_clockwidget_battery_part_show">Zobrazit při nízké hodnotě nebo při nabíjení</string>
+    <string name="preference_clockwidget_battery_part_hide">Vypnuto</string>
+    <string name="uv_index">UV %1$d</string>
 </resources>

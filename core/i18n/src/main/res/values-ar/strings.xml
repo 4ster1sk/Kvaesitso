@@ -68,7 +68,7 @@
     <string name="alert_delete_shortcut">سوف يتم ازالة اختصار %1$s نهائيا. هل تريد المتابعة؟</string>
     <string name="default_websearch_2_url">https://www.youtube.com/results\?search_query=${1}</string>
     <string name="menu_app_info">معلومات التطبيق</string>
-    <string name="file_type_music">ملف موسيقى</string>
+    <string name="file_type_music">الصوتيات</string>
     <string name="menu_contacts_open_externally">افتح فى تطبيق جهات الاتصال</string>
     <string name="wind_east_south_east">شرق الجنوب الشرقي</string>
     <string name="file_type_none">ملف</string>
@@ -95,16 +95,16 @@
     <string name="menu_edit_widgets">تحرير أدوات الواجهة</string>
     <string name="widget_name_weather">الطقس</string>
     <string name="widget_name_calendar">التقويم</string>
-    <string name="widget_name_music">الموسيقى</string>
+    <string name="widget_name_music">الصوتيات</string>
     <string name="widget_name_notes">ملاحظة</string>
     <string name="widget_name_unknown">أداة واجهة تطبيق غير معروفة</string>
     <string name="widget_add_widget">إضافة أداة واجهة</string>
-    <string name="notes_widget_placeholder">اكتب ملاحظة…</string>
+    <string name="notes_widget_placeholder">اكتب ملاحظة</string>
     <string name="notes_widget_action_new">ملاحظة جديدة</string>
     <string name="notes_widget_action_save">‌حفظ</string>
     <string name="notes_widget_export_filename">ملاحظة_%1$s</string>
     <string name="notes_widget_action_dismiss">استبعاد</string>
-    <string name="notes_widget_dismissed">تم ‏رفض الملاحظة.</string>
+    <string name="notes_widget_dismissed">تم ‏رفض الملاحظة</string>
     <string name="shortcut_summary">من طرف %1$s</string>
     <string name="edit">تعديل</string>
     <string name="close">إغلاق</string>
@@ -140,7 +140,7 @@
     <string name="edit_favorites_dialog_empty_section">اسحب العناصر الى هنا</string>
     <string name="nextcloud_server_url">عنوان URL لخادم Nextcloud</string>
     <string name="edit_favorites_dialog_tag_section_empty">ستظهر العلامات المثبتة هنا</string>
-    <string name="edit_favorites_dialog_new_tag">إنشاء علامة…</string>
+    <string name="edit_favorites_dialog_new_tag">إنشاء علامة</string>
     <string name="owncloud_server_invalid_url">لا يشير عنوان URL هذا إلى تثبيت Owncloud صالح</string>
     <string name="nextcloud_server_invalid_url">لا يشير عنوان URL هذا إلى تثبيت Nextcloud صالح</string>
     <string name="owncloud_server_url">عنوان URL لخادم Owncloud</string>
@@ -541,7 +541,6 @@
     <string name="preference_clock_widget_show_seconds">إظهار الثواني</string>
     <string name="preference_clockwidget_date_part_summary">إظهار التاريخ الحالي</string>
     <string name="preference_clockwidget_favorites_part">قاعدة التثبيت</string>
-    <string name="preference_clockwidget_battery_part_summary">إظهار مستوى البطارية الحالي عندما تكون البطارية منخفضة أو قيد الشحن</string>
     <string name="preference_restore">استعادة</string>
     <string name="preference_restore_summary">استيراد نسخة احتياطية تم إنشاؤها مسبقًا</string>
     <string name="preference_logs">السجلات</string>
@@ -885,7 +884,7 @@
     <string name="poi_category_stationery">محل أدوات مكتبية</string>
     <string name="preference_breezyweather_integration">تطبيق Breezy Weather</string>
     <string name="preference_breezyweather_integration_description">Breezy Weather تطبيق طقس مجاني ومفتوح المصدر. إن وُجد، يمكنه إمداد %1$s ببيانات الطقس.</string>
-    <string name="preference_breezyweather_integration_instructions">لتفعيل Breezy Weather كموفر الطقس:\n\n1. اذهب إلى Breezy Weather > الإعدادات > الأدوات > تفعيل %1$s\n\n2. اختر Breezy Weather من إعدادات الطقس في %1$s</string>
+    <string name="preference_breezyweather_integration_instructions">لتفعيل Breezy Weather كموفر الطقس:\n\n1. اذهب إلى Breezy Weather &gt; الإعدادات &gt; الأدوات &gt; تفعيل %1$s\n\n2. اختر Breezy Weather من إعدادات الطقس في %1$s</string>
     <string name="preference_category_enabled_plugins">مفعلة</string>
     <string name="preference_category_feed_provider">مصدر الأخبار</string>
     <string name="preference_category_installed_plugins">مثبتة</string>
@@ -925,7 +924,7 @@
     <string name="preference_tasks_integration_ready">تم الربط بنجاح. التطبيق جاهز للاستخدام.</string>
     <string name="preference_transliteration">طريقة كتابة الأحرف</string>
     <string name="preference_transliteration_auto">تلقائي</string>
-    <string name="preference_transliteration_disabled">معطل</string>
+    <string name="preference_value_disabled">معطل</string>
     <string name="preference_value_system_default">إعدادات النظام</string>
     <string name="preference_widgets_on_home_screen">أدوات الشاشة الرئيسية</string>
     <string name="preference_widgets_on_home_screen_summary">عرض الأدوات في الشاشة الرئيسية بدلاً من صفحة منفصلة</string>
@@ -938,4 +937,5 @@
     <string name="theme_bundle_name">اسم المظهر</string>
     <string name="theme_export_title">حفظ المظهر</string>
     <string name="theme_import_title">استيراد مظهر</string>
+    <string name="typo_preview_long">الثعلب البني السريع\nيقفز فوق 1234790</string>
 </resources>
